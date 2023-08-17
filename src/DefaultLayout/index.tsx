@@ -1,6 +1,7 @@
 import React from 'react'
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar'
+import Header from './Header';
+import Sidebar from './Sidebar'
+import Footer from './Footer';
 
 type Props = {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ export default function DefaultLayout({ children, activePage }: Props) {
       <div className='col-span-11 overflow-y-auto h-screen'>
         <Header />
         <div className='p-5'>{children}</div>
+        <Footer />
       </div>
     </div>
   );

@@ -3,9 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-$main-color: #E75C62;
-$black: #1C1C1C;
-$border-dark: rgba($main-color, 0.88);
 
 * {
   box-sizing: border-box;
@@ -26,15 +23,6 @@ $border-dark: rgba($main-color, 0.88);
   -webkit-text-size-adjust: 100%;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
   min-width: 320px;
@@ -43,11 +31,8 @@ body {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: $black;
+    color: #1C1C1C;
     background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
   }
   button {
     background-color: #f9f9f9;

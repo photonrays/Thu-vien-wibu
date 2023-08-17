@@ -5,6 +5,7 @@ import Bookmark from './page/Bookmark';
 import History from './page/History';
 import Search from './page/Search';
 import Setting from './page/Setting';
+import TestApi from './page/TestApi';
 
 const routes: RouteObject[] = [
     {
@@ -35,6 +36,10 @@ const routes: RouteObject[] = [
         path: '/cai-dat',
         element: <Setting />,
     },
+    {
+        path: '/api',
+        element: <TestApi />
+    }
 ];
 
 export default routes;
