@@ -8,6 +8,7 @@ import Iconify from "@/components/Iconify";
 import { TagItem } from "@/components/TagItem";
 import { ExtendChapter, ExtendManga } from "@/api/extend";
 import { getLatestChapter } from "@/api/chapter";
+import PopularCard from "@/components/PopularCard";
 
 export default function Home() {
   const settings: Settings = {
@@ -16,8 +17,7 @@ export default function Home() {
     lazyLoad: "ondemand",
     speed: 500,
     draggable: false,
-    slidesToShow: 4,
-    slidesToScroll: 3
+    slidesToShow: 1,
   };
 
   const sliderRef = useRef<Slider | null>(null);
@@ -34,7 +34,6 @@ export default function Home() {
   const [popularManga, setPopularManga] = useState<ExtendManga[]>();
   const [tag, setTag] = useState<Tag[]>();
   const [latestChapters, setLatestChapters] = useState<ExtendChapter[]>()
-  const [page, setPage] = useState(1);
   const [mangas, setMangas] = useState<Record<string, ExtendManga>>()
   const [chapters, setChapters] = useState<Record<string, ExtendChapter[]>>({})
 
@@ -55,17 +54,13 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-  }, [])
 
-  useEffect(() => {
-    if (page > 0) {
-      getLatestChapter(page)
+      getLatestChapter(1)
         .then(data => setLatestChapters(data))
         .catch((err) => {
           console.log(err);
         });
-    }
-  }, [page])
+  }, [])
 
   useEffect(() => {
     if (latestChapters) {
@@ -92,12 +87,10 @@ export default function Home() {
       {/*Top manga*/}
       <section className="mb-8">
         <h2 className="text-2xl font-bold">Truyện đề cử</h2>
-        <div className="max-w-full relative px-5">
+        <div className="max-w-[1400px] relative px-5">
           <Slider ref={sliderRef} {...settings}>
-            {popularManga?.map((manga, idx) => {
-              return <div key={idx}>
-                <Card ranking={idx + 1} manga={manga} />
-              </div>
+            {popularManga?.map((obj, index) => {
+              return <PopularCard key={index} data={obj} />
             })}
           </Slider>
           <Iconify className="absolute top-1/2 -translate-y-1/2 left-0 hover:cursor-pointer bg-slate-100 rounded-full" icon="iconamoon:arrow-left-2" onClick={previous} width={40} />
@@ -133,7 +126,7 @@ export default function Home() {
             <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">Xem tất cả</button>
           </div>
         <div className="grid grid-cols-3">
-          {mangas && chapters && Object.entries(chapters).map(([mangaId, chapterList], idx) => {
+          {mangas && chapters && Object.entries(chapters).slice(0, 18).map(([mangaId, chapterList], idx) => {
             return <DetailCard key={idx} manga={mangas[mangaId]} chapter={chapterList[0]} />
           })}
         </div>

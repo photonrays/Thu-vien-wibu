@@ -1,6 +1,6 @@
 import { axiosInstance } from "./axiosInstance"
 import { getPreviousMonthDateTimeUTC } from "./utils"
-import { GetSearchMangaRequestOptions, Manga, MangaList, MangaRequest, TagResponse } from "./schema"
+import { GetSearchMangaRequestOptions, MangaList, TagResponse } from "./schema"
 import extendRelationship from "@/utils/extendRelationship";
 import { ExtendManga } from "./extend";
 
@@ -26,21 +26,21 @@ export const getPopularNewTitle = async (): Promise<ExtendManga[]> => {
   return mangas;
 }
 
-export async function getMangas(options: GetSearchMangaRequestOptions): Promise<MangaList> {
-  const requestParams = {
-    includes: ["cover_art"],
-    order: { followedCount: "desc" },
-    contentRating: ["safe", "suggestive"],
-    hasAvailableChapters: "true",
-    createdAtSince: getPreviousMonthDateTimeUTC(),
-  };
+// export async function getMangas(options: GetSearchMangaRequestOptions): Promise<MangaList> {
+//   const requestParams = {
+//     includes: ["cover_art"],
+//     order: { followedCount: "desc" },
+//     contentRating: ["safe", "suggestive"],
+//     hasAvailableChapters: "true",
+//     createdAtSince: getPreviousMonthDateTimeUTC(),
+//   };
 
-  const {data} = await axiosInstance.get<MangaList>("manga", {
-    params: requestParams,
-  })
+//   const {data} = await axiosInstance.get<MangaList>("manga", {
+//     params: requestParams,
+//   })
 
-  return data;
-}
+//   return data;
+// }
 
 
 export const getLastestUpdates = async (page: number): Promise<ExtendManga[]> => {
@@ -66,10 +66,10 @@ export const getLastestUpdates = async (page: number): Promise<ExtendManga[]> =>
 }
 
 
-export const getMangasByIds = async (ids: string[]): Promise<Record<string, ExtendManga>> => {
-  const requestParams = {
+export const getMangasByIds = async (mangaIds: string[]): Promise<Record<string, ExtendManga>> => {
+  const requestParams: GetSearchMangaRequestOptions = {
     includes: ["cover_art"],
-    ids,
+    ids: mangaIds,
     contentRating: ["safe", "suggestive", "erotica", "pornographic"],
     hasAvailableChapters: "true",
     limit: 100

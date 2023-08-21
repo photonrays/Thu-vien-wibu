@@ -1,4 +1,3 @@
-import React from 'react'
 import Header from './Header';
 import Sidebar from './Sidebar'
 import Footer from './Footer';
@@ -11,11 +10,11 @@ type Props = {
 
 export default function DefaultLayout({ children, activePage }: Props) {
   return (
-    <div className='grid grid-cols-12 overflow-hidden'>
+    <div className='flex h-screen'>
       <Sidebar activePage={activePage} />
-      <div className='col-span-11 overflow-y-auto h-screen'>
+      <div className=''>
         <Header />
-        <div className='p-5'>{children}</div>
+        <div className=''>{children}</div>
         <Footer />
       </div>
     </div>

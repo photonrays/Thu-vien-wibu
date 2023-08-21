@@ -7,7 +7,7 @@ type Props = {
 
 export default function Sidebar({ activePage }: Props) {
     return (
-        <div className='sticky h-full bg-slate-100 flex flex-col items-center justify-between gap-10 mr-5 py-5'>
+        <div className='sticky w-[90px] h-full bg-slate-100 flex flex-col shrink-0 items-center justify-between gap-10 py-5 top-0'>
             <Iconify icon="raphael:books" width={60} className="text-primary" />
             <div className="flex flex-col items-center gap-10 -mt-40">
                 <Iconify icon="mingcute:grid-2-line" width={36} color="#C4C4C4" />
