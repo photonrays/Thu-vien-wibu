@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import routes from './routes';
 import DefaultLayout from './DefaultLayout';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider } from './context/useHeader';
 
 function App() {
   return (

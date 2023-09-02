@@ -1,140 +1,228 @@
-import Card1 from '@/assets/Cards/1.png'
 import Iconify from '@/components/Iconify'
-import { Link } from 'react-router-dom'
 import Chapter from '@/components/Chapter'
 import { useEffect, useState } from 'react'
-import { useTheme } from '@/context/ThemeContext'
+import { useHeader } from '@/context/useHeader'
 import Tag from '@/components/Tag'
-
-
-function StatisticButton() {
-  return <Link to={"/"} className='text-sm font-bold bg-slate-200 px-2 py-1 rounded-sm'>Ken</Link>
-}
+import { useParams } from 'react-router-dom'
+import { getMangaById, getMangaFeed } from '@/api/manga'
+import { getMangaStatistic } from '@/api/statistic'
+import { ExtendChapter, ExtendManga } from '@/api/extend'
+import getCoverArt from '@/utils/getCoverArt'
+import { getAltMangaTitle, getMangaTitle } from '@/utils/getTitles'
+import { MangaStatistic } from '@/api/schema'
+import StatisticButton from '@/components/StatisticButton'
 
 export default function Book() {
-  const { setIsScrolled } = useTheme();
+  const { isSidebarOpen, setIsScrolled, setTitleColor } = useHeader();
+  const { id } = useParams();
+  const [manga, setManga] = useState<ExtendManga>();
+  const [statistic, setStatistic] = useState<MangaStatistic>();
+  const [chapters, setChapters] = useState<Record<string, ExtendChapter[]>>()
+
 
   const handleScroll = () => {
-    console.log(window.scrollY)
-    setIsScrolled(window.scrollY > 0);
+    setIsScrolled(window.scrollY);
+    setTitleColor(window.scrollY > 32 ? '#000000' : "#ffffff")
   };
 
   useEffect(() => {
+    setTitleColor("#ffffff")
     window.addEventListener('scroll', handleScroll);
-
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {window.removeEventListener('scroll', handleScroll); setTitleColor('#000000')};
   }, []);
 
+  useEffect(() => {
+    if (id) {
+      getMangaById(id)
+        .then(data => { setManga(data) })
+        .catch(err => console.log(err))
+
+      getMangaStatistic(id)
+        .then(data => { setStatistic(data) })
+        .catch(err => console.log(err))
+
+      getMangaFeed(id)
+        .then(data => {
+          if (data) {
+            const sortedChapters: Record<string, ExtendChapter[]> = {}
+            for (const chapter of data) {
+              const volume = chapter.attributes.volume || '-1'
+              if (!sortedChapters[volume]) {
+                sortedChapters[volume] = []
+              }
+              sortedChapters[volume].push(chapter)
+            }
+            setChapters(sortedChapters)
+          }
+        }
+        )
+        .catch(err => console.log(err))
+    }
+  }, [id])
+
+  const coverArt = getCoverArt(manga)
+  const artist = manga?.artist?.attributes?.name || ''
+  const author = manga?.author?.attributes?.name || ''
+  const formatter = Intl.NumberFormat('en', { notation: 'compact' });
 
 
   return (
-    <div className='relative pt-8'>
+    <div className='relative sm:pt-8 pt-2 '>
       {/* Background image */}
       <div
-        className={`fixed h-[640px] w-full bg-[url('https://mangadex.org/covers/1cec4f31-88a7-48c0-987e-9697afc27f67/5784b5bf-d04e-4f9d-b8e0-6251fa27a768.png.512.jpg')] bg-no-repeat bg-cover -top-[69px] -left-4 z-[-2] blur-sm`}
-      >
-      </div>
+        className={`fixed h-[600px] max-lg:!w-full bg-no-repeat bg-cover -top-[80px] z-[-1] blur-sm transition-all`}
+        style={{ width: `calc(100% - ${isSidebarOpen ? '256px' : '0px'})`, backgroundImage: `url(${coverArt}` }}
+      ></div>
 
       {/* Gradient background container */}
-      <div className='absolute h-[640px] w-full bg-gradient-to-l from-transparent to-[#000000] -top-[69px] -left-4 z-[-1]'></div>
+      <div
+        className='fixed h-[600px] max-lg:!w-full bg-gradient-to-t from-white sm:bg-gradient-to-l sm:from-transparent sm:to-[#000000] -top-[80px] z-[-1] transition-all'
+        style={{ width: `calc(100% - ${isSidebarOpen ? '256px' : '0px'})` }}
+      ></div>
 
-      {/* Book details */}
-      <div className='flex z-10'>
-        {/* Book cover */}
-        <div className='absolute flex-shrink-0 bg-white rounded-lg left-10'><img src={Card1} className='w-52 h-auto rounded-lg object-contain' /></div>
+      {/* Books details */}
+      <div className='flex flex-col z-10'>
+        <div className='flex sm:h-[260px]'>
+          {/* Book cover */}
+          <div className='sm:absolute sm:max-h-[300px] max-h-[200px] sm:w-[200px] w-[100px] flex shrink-0 justify-start rounded-lg sm:left-10 ml-4 mb-4 sm:m-0'><img src={coverArt} className='h-auto w-full rounded-lg object-top object-contain' /></div>
 
-        {/* Details */}
-        <div className='h-full'>
-          {/* book's title, alt title and author */}
-          <div className='pl-72 pb-4'>
-            <div>
-              <h1 className='text-5xl font-bold text-white'>That Time I Got Reincarnated With Talent ~I'll Work Hard Even if I Go to Another World~</h1>
-              <p className='text-xl text-white pb-14'>転生したら才能があった件～異世界行っても努力する～</p>
-            </div>
-            <p className='text-md text-white'>Takehana Note, パクパク, Ken</p>
-          </div>
-
-          {/* utility buttons */}
-          <div className='bg-white pl-72 pt-2'>
-            <div className='mt-4 flex gap-2 '>
-              <button className='bg-primary text-white px-10 py-3 rounded-md'>Add to Library</button>
-              <button className='bg-slate-200 text-white px-3 py-3 rounded-md'><Iconify icon="iconamoon:star-light" width={20} color='#000000' /></button>
-              <button className='bg-slate-200 text-black px-6 py-3 rounded-md'>Add to list</button>
-              <button className='bg-slate-200 text-black px-6 py-3 rounded-md'>Start reading</button>
-            </div>
-
-            {/* book's tags */}
-            <div className='mt-4 flex gap-2 items-center'>
-              <Tag />
-              <Tag />
-              <Tag />
-              <Tag />
-              <Tag />
-              <span className='text-xs font-bold px-1 uppercase flex items-center'><Iconify icon="icon-park-outline:dot" width={20} className='inline' color='#04d000' />PUBLICATION: 2023, ONGOING</span>
-            </div>
-
-            {/* books statistic */}
-            <div className='pt-4 flex gap-2 items-center'>
-              <span className='px-1 flex items-center text-primary'><Iconify icon="iconamoon:star-light" width={20} className='text-primary inline pr-1' />7.53</span>
-              <span className='px-1 flex items-center text-black'><Iconify icon="material-symbols:bookmark-outline" width={20} className='text-black inline pr-1' />5,902</span>
-              <span className='px-1 flex items-center text-black'><Iconify icon="majesticons:comment-line" width={20} className='text-black inline pr-1' />3</span>
-              <span className='px-1 flex items-center text-black'><Iconify icon="ph:eye" width={20} className='text-black inline pr-1' />N/A</span>
+          {/* Details */}
+          <div className='h-full mr-4'>
+            <div className='flex flex-col sm:pl-[17rem] pl-4 pb-4 h-full'>
+              <div className='flex-1'>
+                <h1 className='lg:text-4xl md:text-3xl sm:text-2xl text-xl font-bold text-black sm:text-white mb-1'>{getMangaTitle(manga)}</h1>
+                <p className='xl:text-2xl lg:text-xl md:text-lg sm:text-base text-sm text-black sm:text-white mb-1'>{getAltMangaTitle(manga)}</p>
+              </div>
+              <p className='xl:text-xl lg:text-lg md:text-base sm:text-sm text-xs text-black sm:text-white'>{author === artist ? author : author + ", " + artist}</p>
+              <div className='pt-4 flex gap-2 items-center sm:hidden'>
+                <span className='px-1 flex items-center text-primary'><Iconify icon="iconamoon:star-light" width={20} className='text-primary inline pr-1' />{statistic?.rating['bayesian'].toFixed(2)}</span>
+                <span className='px-1 flex items-center text-black'><Iconify icon="material-symbols:bookmark-outline" width={20} className='text-black inline pr-1' />{statistic?.follows && formatter.format(statistic?.follows)}</span>
+                <span className='px-1 flex items-center text-black'><Iconify icon="majesticons:comment-line" width={20} className='text-black inline pr-1' />{statistic?.comments?.repliesCount && formatter.format(statistic?.comments?.repliesCount)}</span>
+                <span className='px-1 flex items-center text-black'><Iconify icon="ph:eye" width={20} className='text-black inline pr-1' />N/A</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <p className='pt-4 px-8 bg-white'>
-        A ronin (NEET) student, despite his efforts yielding no rewards, suddenly found himself in a different world when he tried to stop a robber, along with a female convenience store clerk. He sought a talent that would be granted only through earnest efforts from a deity and was gifted the skills of 【Innate Talent】, enabling him to outgrow others consistently, and 【Clairvoyance】, which lets him appraise people and items. However, he needs three times the usual experience points for leveling up. Reborn as Mars, the second son of a viscount family, he diligently improves his stats. But near the town, signs of a monster stampede are emerging... Thus begins an otherworldly reincarnation effort fantasy!
-      </p>
-      <div className='grid grid-cols-3 gap-4 p-8 bg-white'>
-        {/* statistic */}
-        <div className=''>
-          <span className='font-bold text-lg'>Author</span>
-          <div className='flex gap-2 items-center mt-2 mb-4'>
-            <StatisticButton />
-            <StatisticButton />
-            <StatisticButton />
+
+      {/* Utility statistic */}
+      <div className='bg-white'>
+        {/* Utility button and statistic */}
+        <div className='sm:pl-[17rem] px-8 pt-2'>
+          <div className='mt-4 flex gap-2 '>
+            <button className='bg-primary text-white md:px-10 px-3 py-3 rounded-md flex items-center gap-2 shadow-primaryButton'><Iconify icon='mdi:bookmark-outline' width={20} color='#ffffff' /><span className='hidden md:inline'>Add to Library</span></button>
+            <button className='bg-slate-200 text-white px-3 py-3 rounded-md'><Iconify icon="iconamoon:star-light" width={20} color='#000000' /></button>
+            <button className='bg-slate-200 text-black lg:px-6 px-3 py-3 rounded-md flex items-center gap-2'><Iconify icon="ion:book-outline" width={20} color='#000000' /><span className='lg:inline sm:hidden inline'>Start reading</span></button>
           </div>
-          <span className='font-bold text-lg'>Author</span>
-          <div className='flex gap-2 items-center mt-2 mb-4'>
-            <StatisticButton />
-            <StatisticButton />
-            <StatisticButton />
+
+          {/* book's tags */}
+          <div className='mt-4 flex gap-2 items-center flex-wrap'>
+            {manga?.attributes.contentRating === "suggestive" && <Tag contentRating={manga?.attributes.contentRating} />}
+            {manga?.attributes.tags.map((obj, index) => <Tag key={index} data={obj} />)}
+            <span className='text-xs font-bold px-1 uppercase flex items-center'><Iconify icon="icon-park-outline:dot" width={20} className='inline' color='#04d000' style={{ color: `${manga?.attributes.status ? '#04d000' : '#ff4040'}` }} />{`Xuất bản: ${manga?.attributes.year || ''}, ${manga?.attributes.status || ''}`}</span>
           </div>
-          <span className='font-bold text-lg'>Author</span>
-          <div className='flex gap-2 items-center mt-2 mb-4'>
-            <StatisticButton />
-            <StatisticButton />
-            <StatisticButton />
-          </div>
-          <span className='font-bold text-lg'>Author</span>
-          <div className='flex gap-2 items-center mt-2 mb-4'>
-            <StatisticButton />
-            <StatisticButton />
-            <StatisticButton />
-          </div>
-          <span className='font-bold text-lg'>Alternative Title</span>
-          <div className='flex gap-2 items-center mt-2 mb-4'>
-            <StatisticButton />
-            <StatisticButton />
-            <StatisticButton />
+
+          {/* books statistic */}
+          <div className='pt-4 sm:flex hidden gap-2 items-center'>
+            <span className='px-1 flex items-center text-primary'><Iconify icon="iconamoon:star-light" width={20} className='text-primary inline pr-1' />{statistic?.rating['bayesian'].toFixed(2)}</span>
+            <span className='px-1 flex items-center text-black'><Iconify icon="material-symbols:bookmark-outline" width={20} className='text-black inline pr-1' />{statistic?.follows && formatter.format(statistic?.follows)}</span>
+            <span className='px-1 flex items-center text-black'><Iconify icon="majesticons:comment-line" width={20} className='text-black inline pr-1' />{statistic?.comments?.repliesCount && formatter.format(statistic?.comments?.repliesCount)}</span>
+            <span className='px-1 flex items-center text-black'><Iconify icon="ph:eye" width={20} className='text-black inline pr-1' />N/A</span>
           </div>
         </div>
 
-        {/*chapter list */}
-        <div className='col-span-2'>
-          <div className='flex justify-between'>
-            <button className='bg-slate-200 py-1 px-3 rounded-md'>Descending</button>
+        {/* More books info */}
+        <div className='pt-4 px-8 overflow-hidden '>
+          <p className='line-clamp-5 mb-4'>{manga?.attributes.description['en']}</p>
+          <div className='flex gap-4 xl:hidden flex-wrap'>
             <div>
-              <button className='bg-slate-200 py-1 px-3 rounded-md mr-2'>Descending</button>
-              <button className='bg-slate-200 py-1 px-3 rounded-md'>Descending</button>
+              <span className='font-bold text-lg text-left'>Tác giả</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {author && <StatisticButton title={author} />}
+              </div>
+            </div>
+            <div>
+              <span className='font-bold text-lg text-left'>Họa sĩ</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {artist && <StatisticButton title={artist} />}
+              </div>
+            </div>
+            <div>
+              <span className='font-bold text-lg text-left'>Thể loại</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {manga?.attributes.tags.map((obj, index) => {
+                  if (obj.attributes.group === 'genre') {
+                    return <StatisticButton key={index} title={obj.attributes.name['en']} />
+                  }
+                })}
+              </div>
+            </div>
+            <div>
+              <span className='font-bold text-lg text-left'>Demographic</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {manga?.attributes.publicationDemographic && <StatisticButton title={manga?.attributes.publicationDemographic} />}
+              </div>
+            </div>
+            <div>
+              <span className='font-bold text-lg text-left'>Mua tại của hàng</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {manga?.attributes.links && Object.entries(manga.attributes.links).map(([key, value], index) => {
+                  return <StatisticButton key={index} title={value} linkType={key} />
+                })}
+              </div>
             </div>
           </div>
-          <div>
-            <Chapter />
-            <Chapter />
-            <Chapter />
-            <Chapter />
+        </div>
+
+        {/* More book info + chapter list */}
+        <div className='flex gap-4 px-8 '>
+          <div className='min-w-[400px] max-w-[25%] gap-4 xl:flex hidden flex-wrap'>
+            <div>
+              <span className='font-bold text-lg text-left'>Tác giả</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {author && <StatisticButton title={author} />}
+              </div>
+            </div>
+            <div>
+              <span className='font-bold text-lg text-left'>Họa sĩ</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {artist && <StatisticButton title={artist} />}
+              </div>
+            </div>
+            <div>
+              <span className='font-bold text-lg text-left'>Thể loại</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {manga?.attributes.tags.map((obj, index) => {
+                  if (obj.attributes.group === 'genre') {
+                    return <StatisticButton key={index} title={obj.attributes.name['en']} />
+                  }
+                })}
+              </div>
+            </div>
+            <div>
+              <span className='font-bold text-lg text-left'>Demographic</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {manga?.attributes.publicationDemographic && <StatisticButton title={manga?.attributes.publicationDemographic} />}
+              </div>
+            </div>
+            <div>
+              <span className='font-bold text-lg text-left'>Mua tại của hàng</span>
+              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
+                {manga?.attributes.links && Object.entries(manga.attributes.links).map(([key, value], index) => {
+                  return <StatisticButton key={index} title={value} linkType={key} />
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className='grow'>
+            <div className='flex justify-between'>
+              <button className='bg-slate-200 py-1 px-3 rounded-md'>Descending</button>
+              <button className='bg-slate-200 py-1 px-3 rounded-md'>Collapse</button>
+            </div>
+            <div>
+              {chapters && Object.entries(chapters).map(([volume, chapterList], index) => <Chapter key={index} volume={volume} chapterList={chapterList} />)}
+            </div>
           </div>
         </div>
       </div>

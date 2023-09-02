@@ -1,7 +1,7 @@
 import { ExtendChapter, ExtendManga } from '@/api/extend'
 import NoImg from '@/assets/No-Image-Placeholder.png'
 import getChapterTitle from '@/utils/getChapterTitle'
-import getCoverArt from '@/utils/getCover'
+import getCoverArt from '@/utils/getCoverArt'
 import Iconify from './Iconify'
 import { formatNowDistance } from '@/utils/dateFns'
 

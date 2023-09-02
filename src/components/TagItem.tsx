@@ -8,7 +8,7 @@ type Props = {
 
 export function TagItem(props: Props) {
   return (
-    <Link to={"/"} className="h-[40px] bg-white rounded-3xl inline-flex items-center px-5 drop-shadow-md m-2">
+    <Link to={"/"} className="h-[40px] bg-white rounded-3xl inline-flex items-center px-5 shadow-lg m-2">
           {/* <Iconify icon={props.iconName || "ps:gun"} className="inline mr-1"/> */}
           <span>{props.name}</span>
     </Link>

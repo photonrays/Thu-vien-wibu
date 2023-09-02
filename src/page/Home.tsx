@@ -9,12 +9,13 @@ import { TagItem } from "@/components/TagItem";
 import { ExtendChapter, ExtendManga } from "@/api/extend";
 import { getLatestChapter } from "@/api/chapter";
 import PopularCard from "@/components/PopularCard";
+import { useHeader } from "@/context/useHeader";
 
 export default function Home() {
   const settings: Settings = {
     dots: false,
     infinite: true,
-    lazyLoad: "ondemand",
+    lazyLoad: "progressive",
     speed: 500,
     draggable: false,
     slidesToShow: 1,
@@ -29,6 +30,18 @@ export default function Home() {
   const previous = () => {
     sliderRef.current?.slickPrev();
   };
+
+  const { setIsScrolled, setTitleColor } = useHeader();
+
+
+  const handleScroll = () => {
+    setIsScrolled(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
 
   const [popularManga, setPopularManga] = useState<ExtendManga[]>();
@@ -55,11 +68,11 @@ export default function Home() {
         console.log(err);
       });
 
-      getLatestChapter(1)
-        .then(data => setLatestChapters(data))
-        .catch((err) => {
-          console.log(err);
-        });
+    getLatestChapter(1)
+      .then(data => setLatestChapters(data))
+      .catch((err) => {
+        console.log(err);
+      });
   }, [])
 
   useEffect(() => {
@@ -75,7 +88,7 @@ export default function Home() {
       }
       setChapters(updates)
       getMangasByIds(Object.keys(chapters))
-        .then(data => {console.log(data);setMangas(data)})
+        .then(data => { setMangas(data) })
         .catch((err) => {
           console.log(err);
         });
@@ -83,11 +96,11 @@ export default function Home() {
   }, [latestChapters])
 
   return (
-    <div className="w-full">
+    <div className="w-full px-8 select-none">
       {/*Top manga*/}
-      <section className="mb-8">
+      <section className="mb-8 w-full">
         <h2 className="text-2xl font-bold">Truyện đề cử</h2>
-        <div className="max-w-[1400px] relative px-5">
+        <div className="w-full relative">
           <Slider ref={sliderRef} {...settings}>
             {popularManga?.map((obj, index) => {
               return <PopularCard key={index} data={obj} />
@@ -106,7 +119,7 @@ export default function Home() {
             <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">Xem tất cả</button>
           </div>
           <div className="bg-[#F0F4FF] w-full mt-5 rounded-3xl">
-            
+
           </div>
         </div>
         {/*Popular tag*/}
@@ -120,16 +133,25 @@ export default function Home() {
       </section>
 
       {/* Latest update */}
-      <section>
+      <section className="mb-8 w-full">
         <div className="flex justify-between">
-            <h2 className="text-2xl font-bold mb-8">Mới cập nhật</h2>
-            <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">Xem tất cả</button>
-          </div>
+          <h2 className="text-2xl font-bold mb-8">Mới cập nhật</h2>
+          <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">Xem tất cả</button>
+        </div>
         <div className="grid grid-cols-3">
           {mangas && chapters && Object.entries(chapters).slice(0, 18).map(([mangaId, chapterList], idx) => {
             return <DetailCard key={idx} manga={mangas[mangaId]} chapter={chapterList[0]} />
           })}
         </div>
+      </section>
+
+      {/* Recently added */}
+      <section>
+        <div className="flex justify-between">
+          <h2 className="text-2xl font-bold mb-8">Mới thêm gần đây</h2>
+          <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">Xem tất cả</button>
+        </div>
+
       </section>
     </div>
   )

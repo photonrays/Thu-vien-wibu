@@ -4,7 +4,7 @@ import NoImg from '@/assets/No-Image-Placeholder.png';
 import { Link } from 'react-router-dom'
 import { Manga } from "@/api/schema";
 import { ExtendManga } from "@/api/extend";
-import getCoverArt from "@/utils/getCover";
+import getCoverArt from "@/utils/getCoverArt";
 
 type Props = {
   manga: ExtendManga

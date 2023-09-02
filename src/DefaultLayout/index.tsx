@@ -10,9 +10,9 @@ type Props = {
 
 export default function DefaultLayout({ children, activePage }: Props) {
   return (
-    <div className='flex h-screen'>
-      <Sidebar activePage={activePage} />
-      <div className=''>
+    <div className='flex max-w-full'>
+      <Sidebar className='' activePage={activePage} />
+      <div className='flex-1'>
         <Header />
         <div className=''>{children}</div>
         <Footer />

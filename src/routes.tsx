@@ -6,6 +6,7 @@ import History from './page/History';
 import Search from './page/Search';
 import Setting from './page/Setting';
 import Test from '@/page/Test'
+import Chapter from './page/Chapter';
 
 const routes: RouteObject[] = [
     {
@@ -17,8 +18,8 @@ const routes: RouteObject[] = [
         element: <Book />,
     },
     {
-        path: '/chuong/:id',
-        element: <Book />,
+        path: '/chuong/:id/:page',
+        element: <Chapter />,
     },
     {
         path: '/theo-doi',
