@@ -11,6 +11,11 @@ import { Order, Includes } from './static';
 // import * as util from './util';
 
 /*******************
+ * CONSTANT DEFINITIONS
+ *******************/
+
+
+/*******************
  * ENUM DEFINITIONS
  *******************/
 

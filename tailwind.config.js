@@ -17,7 +17,7 @@ export default {
       },
       boxShadow: {
         'primaryButton': '0 0 24px -6px #E75C62',
-      }
+      },
     },
   },
   plugins: [],

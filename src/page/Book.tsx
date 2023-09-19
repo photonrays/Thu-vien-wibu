@@ -4,31 +4,31 @@ import { useEffect, useState } from 'react'
 import { useHeader } from '@/context/useHeader'
 import Tag from '@/components/Tag'
 import { useParams } from 'react-router-dom'
-import { getMangaById, getMangaFeed } from '@/api/manga'
+import { getMangaById } from '@/api/manga'
 import { getMangaStatistic } from '@/api/statistic'
-import { ExtendChapter, ExtendManga } from '@/api/extend'
+import { ExtendManga } from '@/api/extend'
 import getCoverArt from '@/utils/getCoverArt'
 import { getAltMangaTitle, getMangaTitle } from '@/utils/getTitles'
 import { MangaStatistic } from '@/api/schema'
 import StatisticButton from '@/components/StatisticButton'
+import useChapterList from '@/hooks/useChapterList'
 
 export default function Book() {
-  const { isSidebarOpen, setIsScrolled, setTitleColor } = useHeader();
+  const { isSidebarOpen, setTitleColor } = useHeader();
   const { id } = useParams();
   const [manga, setManga] = useState<ExtendManga>();
   const [statistic, setStatistic] = useState<MangaStatistic>();
-  const [chapters, setChapters] = useState<Record<string, ExtendChapter[]>>()
+  // const [chapters, setChapters] = useState<Record<string, ExtendChapter[]>>()
+  // const { chapters } = await useChapterList(id)
+  const {chapters, isLoading} = useChapterList(id);
 
 
-  const handleScroll = () => {
-    setIsScrolled(window.scrollY);
-    setTitleColor(window.scrollY > 32 ? '#000000' : "#ffffff")
-  };
+
 
   useEffect(() => {
     setTitleColor("#ffffff")
-    window.addEventListener('scroll', handleScroll);
-    return () => {window.removeEventListener('scroll', handleScroll); setTitleColor('#000000')};
+
+    return () => setTitleColor("#000000")
   }, []);
 
   useEffect(() => {
@@ -40,23 +40,6 @@ export default function Book() {
       getMangaStatistic(id)
         .then(data => { setStatistic(data) })
         .catch(err => console.log(err))
-
-      getMangaFeed(id)
-        .then(data => {
-          if (data) {
-            const sortedChapters: Record<string, ExtendChapter[]> = {}
-            for (const chapter of data) {
-              const volume = chapter.attributes.volume || '-1'
-              if (!sortedChapters[volume]) {
-                sortedChapters[volume] = []
-              }
-              sortedChapters[volume].push(chapter)
-            }
-            setChapters(sortedChapters)
-          }
-        }
-        )
-        .catch(err => console.log(err))
     }
   }, [id])
 
@@ -64,7 +47,6 @@ export default function Book() {
   const artist = manga?.artist?.attributes?.name || ''
   const author = manga?.author?.attributes?.name || ''
   const formatter = Intl.NumberFormat('en', { notation: 'compact' });
-
 
   return (
     <div className='relative sm:pt-8 pt-2 '>
