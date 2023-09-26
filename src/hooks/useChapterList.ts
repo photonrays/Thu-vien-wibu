@@ -5,7 +5,7 @@ import useSWR from 'swr'
 
 export default function useChapterList(mangaId: string) {
     let chapters: Record<string, ExtendChapter[]> = {}
-    const { data, isLoading, error } = useSWR(`manga/${mangaId}/feed`, () => getMangaFeed(mangaId))
+    const { data, isLoading } = useSWR(`manga/${mangaId}/feed`, () => getMangaFeed(mangaId))
     if (data) {
         const sortedChapters: Record<string, ExtendChapter[]> = {}
         for (const chapter of data) {
@@ -18,5 +18,5 @@ export default function useChapterList(mangaId: string) {
         chapters = sortedChapters
     }
 
-    return { chapters, data, isLoading, error }
+    return { chapters, data, isLoading }
 }

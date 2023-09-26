@@ -5,7 +5,6 @@ import Bookmark from './page/Bookmark';
 import History from './page/History';
 import Search from './page/Search';
 import Setting from './page/Setting';
-import Test from '@/page/Test'
 import Chapter from './page/Chapter';
 
 const routes: RouteObject[] = [
@@ -36,10 +35,6 @@ const routes: RouteObject[] = [
     {
         path: '/cai-dat',
         element: <Setting />,
-    },
-    {
-        path: '/test',
-        element: <Test />
     }
 ];
 

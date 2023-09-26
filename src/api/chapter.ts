@@ -109,6 +109,7 @@ export const getLatestChapter = async (page: number): Promise<ExtendChapter[]> =
         includes: [Includes.SCANLATION_GROUP],
         order: { readableAt: Order.DESC },
         contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
+        translatedLanguage: ['vi']
     };
 
     let chapters: ExtendChapter[] = [];

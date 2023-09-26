@@ -9,6 +9,7 @@ import { TagItem } from "@/components/TagItem";
 import { ExtendChapter, ExtendManga } from "@/api/extend";
 import { getLatestChapter } from "@/api/chapter";
 import PopularCard from "@/components/PopularCard";
+import usePopularNewTitles from "@/hooks/usePopularNewTitles";
 
 export default function Home() {
   const settings: Settings = {
@@ -31,21 +32,13 @@ export default function Home() {
     sliderRef.current?.slickPrev();
   };
 
-  const [popularManga, setPopularManga] = useState<ExtendManga[]>();
   const [tag, setTag] = useState<Tag[]>();
   const [latestChapters, setLatestChapters] = useState<ExtendChapter[]>()
   const [mangas, setMangas] = useState<Record<string, ExtendManga>>()
-  const [chapters, setChapters] = useState<Record<string, ExtendChapter[]>>({})
+  const [chapters, setChapters] = useState<Record<string, ExtendChapter[]>>()
+  const {populars, popularLoading} = usePopularNewTitles()
 
   useEffect(() => {
-    MangaApi.getPopularNewTitle()
-      .then((data) => {
-        setPopularManga(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
     MangaApi.getTag()
       .then((data) => {
         setTag(data.data.slice(0, 30))
@@ -73,28 +66,33 @@ export default function Home() {
         updates[mangaId].push(chapter)
       }
       setChapters(updates)
+    }
+  }, [latestChapters])
+
+  useEffect(() => {
+    if (chapters) {
       MangaApi.getMangasByIds(Object.keys(chapters))
         .then(data => { setMangas(data) })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, [latestChapters])
+  }, [chapters])
 
   return (
     <div className="w-full px-8 select-none">
       {/*Top manga*/}
       <section className="mb-8 w-full">
-        <h2 className="text-2xl font-bold">Truyện đề cử</h2>
-        <div className="w-full relative">
+        <h2 className="text-2xl font-bold mb-4">Truyện đề cử</h2>
+        {popularLoading ? <PopularCard /> : <div className="w-full relative">
           <Slider ref={sliderRef} {...settings}>
-            {popularManga?.map((obj, index) => {
+            {populars?.map((obj, index) => {
               return <PopularCard key={index} data={obj} />
             })}
           </Slider>
           <Iconify className="absolute top-1/2 -translate-y-1/2 left-0 hover:cursor-pointer bg-slate-100 rounded-full" icon="iconamoon:arrow-left-2" onClick={previous} width={40} />
           <Iconify className="absolute top-1/2 -translate-y-1/2 right-0 hover:cursor-pointer bg-slate-100 rounded-full" icon="iconamoon:arrow-right-2" onClick={next} width={40} />
-        </div>
+        </div>}
       </section>
 
       <section className="grid grid-cols-2 gap-20 mb-14">

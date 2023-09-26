@@ -349,8 +349,8 @@ export const getPopularNewTitle = async (): Promise<ExtendManga[]> => {
       ids: mangaIds,
       contentRating: [MangaContentRating.EROTICA, MangaContentRating.PORNOGRAPHIC, MangaContentRating.SAFE, MangaContentRating.SUGGESTIVE],
       hasAvailableChapters: "true",
-      limit: 100,
-      availableTranslatedLanguage: ['vi']
+      availableTranslatedLanguage: ['vi'],
+      limit: 64
     };
   
     const { data } = await axiosInstance.get<GetSearchMangaResponse>("manga", {
@@ -359,7 +359,7 @@ export const getPopularNewTitle = async (): Promise<ExtendManga[]> => {
   
     let mangas: ExtendManga[] = []
     const updates: Record<string, ExtendManga> = {}
-  
+    
     mangas = data.data.map(mg => extendRelationship(mg) as ExtendManga)
       for (const manga of mangas) {
         if (!updates[manga.id]) {

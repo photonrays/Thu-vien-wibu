@@ -18,8 +18,6 @@ export default function Book() {
   const { id } = useParams();
   const [manga, setManga] = useState<ExtendManga>();
   const [statistic, setStatistic] = useState<MangaStatistic>();
-  // const [chapters, setChapters] = useState<Record<string, ExtendChapter[]>>()
-  // const { chapters } = await useChapterList(id)
   const {chapters, isLoading} = useChapterList(id);
 
 
