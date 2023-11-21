@@ -1,12 +1,8 @@
 import axios from "axios";
 
 // const CORS = import.meta.env.VITE_CORS_URL
+const CorsProxy = 'https://justcors.com/tl_2864b64/';
 
 export const axiosInstance = axios.create({
-    baseURL: `https://api.mangadex.org/`,
-    // proxy: {
-    //     protocol: 'http',
-    //     host: '172.17.10.154',
-    //     port: 8080
-    // }
+    baseURL: `${CorsProxy}https://api.mangadex.org/`,
 })
