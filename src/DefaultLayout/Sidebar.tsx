@@ -7,7 +7,7 @@ type Props = {
     className?: string
 };
 
-export default function Sidebar({ activePage, className = '' }: Props) {
+export default function Sidebar({ className = '' }: Props) {
     const { isSidebarOpen, setIsSidebarOpen } = useHeader();
 
     return (

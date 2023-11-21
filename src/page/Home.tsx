@@ -7,7 +7,6 @@ import Iconify from "@/components/Iconify";
 import { TagItem } from "@/components/TagItem";
 import PopularCard from "@/components/PopularCard";
 import usePopularNewTitles from "@/hooks/usePopularNewTitles";
-import useLatestChapters from "@/hooks/useLatestChapters";
 import { useManga } from "@/context/useManga";
 import { HistoryCard } from "@/components/HistoryCard";
 import useReadingHistory from "@/hooks/useReadingHistory";

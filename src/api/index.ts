@@ -10,5 +10,3 @@ export * as Schema from './schema';
 export * as Static from './static';
 export * as User from './user';
 export * as Statistic from './statistic'
-
-export { isErrorResponse } from './util';
