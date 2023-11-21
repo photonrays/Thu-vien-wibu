@@ -2,7 +2,6 @@ import { formatNowDistance } from "@/utils/dateFns";
 import Iconify from "./Iconify";
 import { ExtendChapter } from "@/api/extend";
 import { Link } from "react-router-dom";
-import { useManga } from "@/context/useManga";
 
 function ChapterDetail({chapter}: {chapter: ExtendChapter}) {
     return (
@@ -32,7 +31,7 @@ export default function Chapter({ volume, chapterList }: { volume?: string, chap
         <div>
             <div className='flex justify-between mt-4'>
                 <span>{volume && volume !== '-1' ? `Tập ${volume}` : 'Không có tập nào'}</span>
-                <span>{chapterList && chapterList?.length > 0 ? `Chương ${chapterList[chapterList?.length - 1].attributes.chapter} - ${chapterList[0].attributes.chapter}` : ''}</span>
+                <span>{chapterList && chapterList?.length > 0 ? `Chương ${chapterList[chapterList?.length - 1].attributes.chapter || 'N/A'} - ${chapterList[0].attributes.chapter || 'N/A'}` : 'N/A'}</span>
                 <span>20 <Iconify icon='ep:arrow-up-bold' className='inline' /></span>
                 {/* <span><Iconify icon='ep:arrow-down-bold' /></span> */}
             </div>
