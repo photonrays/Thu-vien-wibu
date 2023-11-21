@@ -2,7 +2,6 @@
  * IMPORT STATEMENTS
  ********************/
 
-import type { AuthenticationToken } from './authentication';
 import { MangaContentRating } from './manga';
 import type { ChapterList, ChapterResponse, ReferenceExpansionChapter, ChapterEdit, Response } from './schema';
 import { Includes, Order } from './static';

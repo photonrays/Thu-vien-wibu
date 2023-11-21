@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Iconify from '@/components/Iconify'
 import Chapter from '@/components/Chapter'
 import { useEffect, useState } from 'react'
@@ -6,13 +7,11 @@ import Tag from '@/components/Tag'
 import { useParams } from 'react-router-dom'
 import { getMangaById } from '@/api/manga'
 import { getMangaStatistic } from '@/api/statistic'
-import { ExtendManga } from '@/api/extend'
 import getCoverArt from '@/utils/getCoverArt'
 import { getAltMangaTitle, getMangaTitle } from '@/utils/getTitles'
 import { MangaStatistic } from '@/api/schema'
 import StatisticButton from '@/components/StatisticButton'
 import useChapterList from '@/hooks/useChapterList'
-import useReadingHistory, { readingHistory } from '@/hooks/useReadingHistory'
 import { useManga } from '@/context/useManga'
 
 export default function Book() {
@@ -20,7 +19,7 @@ export default function Book() {
   const { id } = useParams();
   const {manga, setManga} = useManga();
   const [statistic, setStatistic] = useState<MangaStatistic>();
-  const {chapters, isLoading} = useChapterList(id ?? '');
+  const {chapters} = useChapterList(id ?? '');
 
   useEffect(() => {
     setTitleColor("#ffffff")

@@ -2,9 +2,8 @@
  * IMPORT STATEMENTS
  ********************/
 
-import { AuthenticationToken } from './authentication';
 import { MangaContentRating } from './manga';
-import { CustomListResponse, CustomListList, ChapterList, ErrorResponse } from './schema';
+import { CustomListResponse, CustomListList, ChapterList } from './schema';
 import { Order, Includes } from './static';
 
 /*******************

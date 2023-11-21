@@ -2,7 +2,6 @@
  * IMPORT STATEMENTS
  ********************/
 
-import { AuthenticationToken } from './authentication';
 import { ScanlationGroupList, Response, UserList } from './schema';
 import { Includes } from './static';
 

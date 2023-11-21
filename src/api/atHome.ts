@@ -2,7 +2,6 @@
  * IMPORT STATEMENTS
  ********************/
 
-import type { ErrorResponse } from './schema';
 import {axiosInstance} from '@/api/axiosInstance'
 
 /***********************

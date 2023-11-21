@@ -2,11 +2,9 @@
  * IMPORT STATEMENTS
  ********************/
 import { axiosInstance } from "./axiosInstance"
-import { getPreviousMonthDateTimeUTC } from "./utils"
 import { MangaList, ChapterList, MangaResponse, TagResponse, MangaStatistic, GetMangasStatisticResponse } from './schema';
 import extendRelationship from "@/utils/extendRelationship";
 import { ExtendChapter, ExtendManga } from "./extend";
-import { AuthenticationToken } from './authentication';
 import { Order, Includes } from './static';
 // import * as util from './util';
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { getAtHomeServerChapterId } from '@/api/atHome'
 import { getChapterById } from '@/api/chapter'
 import { ExtendChapter } from '@/api/extend'
@@ -13,13 +14,13 @@ import { getMangaTitle, getMangaTitleByChapter } from '@/utils/getTitles'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-type SettingProp = {
-    pageType: "Single Page" | "Double Page" | "Long Strip",
-    pageLimit: "No Limit" | "Fit Width" | "Fit Height",
-    readDirection: "Right To Left" | "Left To Right",
-    headerRef: "Header Hidden" | "Header Shown",
-    progressBar: "Normal Progress" | "Progress Hidden" | "Progress Lightbar"
-}
+// type SettingProp = {
+//     pageType: "Single Page" | "Double Page" | "Long Strip",
+//     pageLimit: "No Limit" | "Fit Width" | "Fit Height",
+//     readDirection: "Right To Left" | "Left To Right",
+//     headerRef: "Header Hidden" | "Header Shown",
+//     progressBar: "Normal Progress" | "Progress Hidden" | "Progress Lightbar"
+// }
 
 export default function Chapter() {
     const { id, page } = useParams()
@@ -28,12 +29,12 @@ export default function Chapter() {
     const [chapter, setChapter] = useState<ExtendChapter | null>(null)
     const [chapterIndex, setChapterIndex] = useState<number>(1)
     const [isOpen, setIsOpen] = useState(false)
-    const [currPage, setCurrPage] = useState(page)
+    const [currPage, setCurrPage] = useState(Number(page))
     const [pageList, setPageList] = useState<number[]>([])
     const [isDD1Open, setDD1IsOpen] = useState(false)
     const [isDD2Open, setDD2IsOpen] = useState(false)
     // const [settings, setSettings] = useState()
-    const { data, isLoading } = useChapterList(chapter?.manga?.id || '0');
+    const { data } = useChapterList(chapter?.manga?.id || '0');
     const {manga} = useManga()
     const {addHistory} = useReadingHistory()
 

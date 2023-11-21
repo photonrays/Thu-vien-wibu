@@ -2,8 +2,7 @@
  * IMPORT STATEMENTS
  ********************/
 
-import type { AuthenticationToken } from './authentication';
-import type { AuthorList, AuthorResponse, AuthorCreate, AuthorEdit, Response, ErrorResponse, ReferenceExpansionAuthor } from './schema';
+import type { AuthorList, AuthorResponse, AuthorCreate, AuthorEdit, Response, ReferenceExpansionAuthor } from './schema';
 import type { Order } from './static';
 
 /*******************

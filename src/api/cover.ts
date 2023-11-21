@@ -2,8 +2,7 @@
  * IMPORT STATEMENTS
  ********************/
 
-import { AuthenticationToken } from './authentication';
-import { CoverEdit, CoverList, CoverResponse, ErrorResponse, ReferenceExpansionCoverArt, Response } from './schema';
+import { CoverEdit, CoverList, CoverResponse, ReferenceExpansionCoverArt, Response } from './schema';
 import { Order } from './static';
 
 /*******************

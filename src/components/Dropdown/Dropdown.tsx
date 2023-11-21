@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Iconify from '../Iconify'
 import './Dropdown.scss'
 
@@ -6,7 +7,7 @@ type DropdownType = {
   data?: any[],
   isOpen: boolean
   state?: any,
-  setState?: React.Dispatch<React.SetStateAction<any>>
+  setState: React.Dispatch<React.SetStateAction<any>>
 }
 
 export default function Dropdown({ title, data, isOpen, state, setState }: DropdownType) {

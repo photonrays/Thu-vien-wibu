@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AuthenticationToken } from './authentication';
 import { Links } from './static';
 

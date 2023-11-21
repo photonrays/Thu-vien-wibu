@@ -2,9 +2,6 @@
  * IMPORT STATEMENTS
  ********************/
 
-import type { AuthenticationToken } from './authentication';
-import type { ErrorResponse } from './schema';
-
 /***********************
  * API REQUEST/RESPONSE
  ***********************/

@@ -2,7 +2,7 @@
  * IMPORT STATEMENTS
  ********************/
 
-import { ScanlationGroupList, ScanlationGroupResponse, ErrorResponse } from './schema';
+import { ScanlationGroupList, ScanlationGroupResponse } from './schema';
 import { Order, Includes } from './static';
 
 /*******************

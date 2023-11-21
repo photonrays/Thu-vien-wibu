@@ -2,7 +2,7 @@
  * IMPORT STATEMENTS
  ********************/
 
-import type { Login, LoginResponse, CheckResponse, LogoutResponse, RefreshResponse, ErrorResponse } from './schema';
+import type { Login, LoginResponse, CheckResponse, LogoutResponse, RefreshResponse } from './schema';
 
 /*******************
  * TYPE DEFINITIONS

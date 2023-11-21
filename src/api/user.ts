@@ -2,11 +2,9 @@
  * IMPORT STATEMENTS
  ********************/
 
-import { AuthenticationToken } from './authentication';
 import { MangaContentRating } from './manga';
-import { UserList, UserResponse, ChapterList, MangaList, ErrorResponse } from './schema';
+import { UserList, UserResponse, ChapterList, MangaList } from './schema';
 import { Order, Includes } from './static';
-import * as util from './util';
 
 /*******************
  * TYPE DEFINITIONS
@@ -112,108 +110,3 @@ export type GetUserMeResponse = UserResponse;
 /***********************
  * FUNCTION DEFINITIONS
  ***********************/
-
-/**
- * Get a list of users based on search parameters.
- * 
- * @param {AuthenticationToken} token See {@link AuthenticationToken}
- * @param {GetUsersRequestOptions} [options] See {@link GetUsersRequestOptions}
- * @returns A promise that resolves to a {@link GetUsersResponse} object.
- */
-export const getUsers = function (token: AuthenticationToken, options?: GetUsersRequestOptions) {
-    const qs = util.buildQueryStringFromOptions(options);
-    const path = `/user${qs}`;
-
-    try {
-        const httpsRequestOptions = util.addTokenAuthorization(token);
-        return util.createHttpsRequestPromise<GetUsersResponse>('GET', path, httpsRequestOptions);
-    } catch (err: any) {
-        return Promise.reject(err);
-    }
-};
-
-/**
- * Get a specific user's information.
- * 
- * @param {string} id UUID formatted string.
- * @returns A promise that resolves to a {@link GetUserIdResponse} object.
- */
-export const getUserId = function (id: string) {
-    if (id === undefined) {
-        return Promise.reject('ERROR - getUserId: Parameter `id` cannot be undefined');
-    } else if (id === '') {
-        return Promise.reject('ERROR - getUserId: Parameter `id` cannot be blank');
-    }
-
-    const path = `/user/${id}`;
-
-    return util.createHttpsRequestPromise<GetUserIdResponse>('GET', path);
-};
-
-// Kenjugs (06/22/2022) TODO: Implement functionality for `DELETE /user/{id}`
-// export const deleteUserId = function (token, id) { };
-
-// Kenjugs (06/22/2022) TODO: Implement functionality for `POST /user/delete/{code}`
-// export const userDeleteCode = function (code) { };
-
-// Kenjugs (06/22/2022) TODO: Implement functionality for `POST /user/password`
-// export const updateUserPassword = function (token, oldPassword, newPassword) { };
-
-// Kenjugs (06/22/2022) TODO: Implement functionality for `POST /user/email`
-// export const updateUserEmail = function (token, email) { };
-
-/**
- * Gets a chapter feed from currently logged in user's list of followed manga.
- * 
- * @param {AuthenticationToken} token See {@link AuthenticationToken}
- * @param {GetUserFollowedMangaFeedRequestOptions} [options] See {@link GetUserFollowedMangaFeedRequestOptions}
- * @returns A promise that resolves to a {@link GetUserFollowedMangaFeedResponse} object.
- * Will resolve to a {@link ErrorResponse} object on error.
- */
-export const getUserFollowedMangaFeed = function (token: AuthenticationToken, options?: GetUserFollowedMangaFeedRequestOptions) {
-    const qs = util.buildQueryStringFromOptions(options);
-    const path = `/user/follows/manga/feed${qs}`;
-
-    try {
-        const httpsRequestOptions = util.addTokenAuthorization(token);
-        return util.createHttpsRequestPromise<GetUserFollowedMangaFeedResponse>('GET', path, httpsRequestOptions);
-    } catch (err: any) {
-        return Promise.reject(err);
-    }
-};
-
-/**
- * Gets the currently logged in user's followed manga list.
- * 
- * @param {AuthenticationToken} token See {@link AuthenticationToken}
- * @param {GetUserFollowedMangaRequestOptions} [options] See {@link GetUserFollowedMangaRequestOptions}
- * @returns A promise that resolves to a {@link GetUserFollowedMangaResponse} object.
- */
-export const getUserFollowedManga = function (token: AuthenticationToken, options?: GetUserFollowedMangaRequestOptions) {
-    const qs = util.buildQueryStringFromOptions(options);
-    const path = `/user/follows/manga${qs}`;
-
-    try {
-        const httpsRequestOptions = util.addTokenAuthorization(token);
-        return util.createHttpsRequestPromise<GetUserFollowedMangaResponse>('GET', path, httpsRequestOptions);
-    } catch (err: any) {
-        return Promise.reject(err);
-    }
-};
-
-/**
- * Gets the currently logged in user's details.
- * 
- * @param {AuthenticationToken} token See {@link AuthenticationToken}
- * @returns A promise that resolves to a {@link GetUserMeResponse} object
- */
-export const getUserMe = function (token: AuthenticationToken) {
-    const path = `/user/me`;
-
-    try {
-        const httpsRequestOptions = util.addTokenAuthorization(token);
-        return util.createHttpsRequestPromise<GetUserMeResponse>('GET', path, httpsRequestOptions);
-    } catch (err: any) {
-        return Promise.reject(err);
-    }
-};
