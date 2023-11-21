@@ -102,19 +102,10 @@ export type DeleteChapterIdResponse = Response;
  * FUNCTION DEFINITIONS
  ***********************/
 
-export const getLatestChapter = async (page: number): Promise<ExtendChapter[]> => {
-    const requestParams: GetChapterRequestOptions = {
-        limit: 64,
-        offset: (page - 1) * 64,
-        includes: [Includes.SCANLATION_GROUP],
-        order: { readableAt: Order.DESC },
-        contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
-        translatedLanguage: ['vi']
-    };
-
+export const getChapterList = async (requestParams: GetChapterRequestOptions): Promise<ExtendChapter[]> => {
     let chapters: ExtendChapter[] = [];
 
-    const { data } = await axiosInstance.get<ChapterList>("chapter", {
+    const { data } = await axiosInstance.get<GetChapterResponse>("chapter", {
         params: requestParams,
     })
 

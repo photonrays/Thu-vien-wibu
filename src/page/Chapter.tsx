@@ -1,12 +1,14 @@
 import { getAtHomeServerChapterId } from '@/api/atHome'
 import { getChapterById } from '@/api/chapter'
-import { ExtendChapter, ExtendManga } from '@/api/extend'
-import { getMangaById } from '@/api/manga'
+import { ExtendChapter } from '@/api/extend'
 import Dropdown from '@/components/Dropdown/Dropdown'
 import Iconify from '@/components/Iconify'
 import { useHeader } from '@/context/useHeader'
+import { useManga } from '@/context/useManga'
 import useChapterList from '@/hooks/useChapterList'
+import useReadingHistory from '@/hooks/useReadingHistory'
 import getChapterTitle from '@/utils/getChapterTitle'
+import getCoverArt from '@/utils/getCoverArt'
 import { getMangaTitle, getMangaTitleByChapter } from '@/utils/getTitles'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -32,10 +34,21 @@ export default function Chapter() {
     const [isDD2Open, setDD2IsOpen] = useState(false)
     // const [settings, setSettings] = useState()
     const { data, isLoading } = useChapterList(chapter?.manga?.id || '0');
+    const {manga} = useManga()
+    const {addHistory} = useReadingHistory()
 
-    if (data) {
-        console.log(data)
-    }
+    useEffect(() => {
+        if (manga && chapter) {
+            console.log("this run")
+
+            addHistory(manga.id, {
+                mangaTitle: getMangaTitle(manga),
+                cover: getCoverArt(manga),
+                chapterTitle: getChapterTitle(chapter),
+                chapterId: chapter.id,
+            })
+        }
+    }, [manga, chapter])
 
     useEffect(() => {
         setIsSticky(false)

@@ -12,16 +12,15 @@ import { getAltMangaTitle, getMangaTitle } from '@/utils/getTitles'
 import { MangaStatistic } from '@/api/schema'
 import StatisticButton from '@/components/StatisticButton'
 import useChapterList from '@/hooks/useChapterList'
+import useReadingHistory, { readingHistory } from '@/hooks/useReadingHistory'
+import { useManga } from '@/context/useManga'
 
 export default function Book() {
   const { isSidebarOpen, setTitleColor } = useHeader();
   const { id } = useParams();
-  const [manga, setManga] = useState<ExtendManga>();
+  const {manga, setManga} = useManga();
   const [statistic, setStatistic] = useState<MangaStatistic>();
-  const {chapters, isLoading} = useChapterList(id);
-
-
-
+  const {chapters, isLoading} = useChapterList(id ?? '');
 
   useEffect(() => {
     setTitleColor("#ffffff")
@@ -138,12 +137,6 @@ export default function Book() {
               </div>
             </div>
             <div>
-              <span className='font-bold text-lg text-left'>Demographic</span>
-              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
-                {manga?.attributes.publicationDemographic && <StatisticButton title={manga?.attributes.publicationDemographic} />}
-              </div>
-            </div>
-            <div>
               <span className='font-bold text-lg text-left'>Mua tại của hàng</span>
               <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
                 {manga?.attributes.links && Object.entries(manga.attributes.links).map(([key, value], index) => {
@@ -177,12 +170,6 @@ export default function Book() {
                     return <StatisticButton key={index} title={obj.attributes.name['en']} />
                   }
                 })}
-              </div>
-            </div>
-            <div>
-              <span className='font-bold text-lg text-left'>Demographic</span>
-              <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>
-                {manga?.attributes.publicationDemographic && <StatisticButton title={manga?.attributes.publicationDemographic} />}
               </div>
             </div>
             <div>

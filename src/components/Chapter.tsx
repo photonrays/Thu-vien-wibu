@@ -2,6 +2,7 @@ import { formatNowDistance } from "@/utils/dateFns";
 import Iconify from "./Iconify";
 import { ExtendChapter } from "@/api/extend";
 import { Link } from "react-router-dom";
+import { useManga } from "@/context/useManga";
 
 function ChapterDetail({chapter}: {chapter: ExtendChapter}) {
     return (

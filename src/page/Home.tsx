@@ -1,15 +1,18 @@
 import Slider, { Settings } from "react-slick";
-import { Card } from "@/components/Card";
 import { DetailCard } from "@/components/DetailCard";
 import { useEffect, useState, useRef } from 'react';
 import * as MangaApi from "@/api/manga";
 import { Tag } from '../api/schema';
 import Iconify from "@/components/Iconify";
 import { TagItem } from "@/components/TagItem";
-import { ExtendChapter, ExtendManga } from "@/api/extend";
-import { getLatestChapter } from "@/api/chapter";
 import PopularCard from "@/components/PopularCard";
 import usePopularNewTitles from "@/hooks/usePopularNewTitles";
+import useLatestChapters from "@/hooks/useLatestChapters";
+import { useManga } from "@/context/useManga";
+import { HistoryCard } from "@/components/HistoryCard";
+import useReadingHistory from "@/hooks/useReadingHistory";
+import useMangaRanking from "@/hooks/useMangaRanking";
+import RankingCard from "@/components/RankingCard";
 
 export default function Home() {
   const settings: Settings = {
@@ -33,51 +36,23 @@ export default function Home() {
   };
 
   const [tag, setTag] = useState<Tag[]>();
-  const [latestChapters, setLatestChapters] = useState<ExtendChapter[]>()
-  const [mangas, setMangas] = useState<Record<string, ExtendManga>>()
-  const [chapters, setChapters] = useState<Record<string, ExtendChapter[]>>()
-  const {populars, popularLoading} = usePopularNewTitles()
+
+  const { populars, popularLoading } = usePopularNewTitles()
+  const { history, removeHistory } = useReadingHistory()
+  const { latestUpdates } = useManga()
+  const { ranking, rankingLoading } = useMangaRanking(1)
+
+  console.log('re-render')
 
   useEffect(() => {
     MangaApi.getTag()
       .then((data) => {
-        setTag(data.data.slice(0, 30))
+        setTag(data.data.slice(0, 14))
       })
       .catch((err) => {
         console.log(err);
       });
-
-    getLatestChapter(1)
-      .then(data => setLatestChapters(data))
-      .catch((err) => {
-        console.log(err);
-      });
   }, [])
-
-  useEffect(() => {
-    if (latestChapters) {
-      const updates: Record<string, ExtendChapter[]> = {}
-      for (const chapter of latestChapters) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        const mangaId = chapter.manga?.id!
-        if (!updates[mangaId]) {
-          updates[mangaId] = []
-        }
-        updates[mangaId].push(chapter)
-      }
-      setChapters(updates)
-    }
-  }, [latestChapters])
-
-  useEffect(() => {
-    if (chapters) {
-      MangaApi.getMangasByIds(Object.keys(chapters))
-        .then(data => { setMangas(data) })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [chapters])
 
   return (
     <div className="w-full px-8 select-none">
@@ -95,26 +70,45 @@ export default function Home() {
         </div>}
       </section>
 
-      <section className="grid grid-cols-2 gap-20 mb-14">
-        {/*Continue reading*/}
+      {/*Continue reading*/}
+      <section className="grid grid-cols-2 lg:grid-cols-3 gap-20 mb-14">
         <div>
           <div className="flex justify-between">
             <h2 className="text-2xl font-bold">Tiếp tục đọc...</h2>
             <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">Xem tất cả</button>
           </div>
-          <div className="bg-[#F0F4FF] w-full mt-5 rounded-3xl">
-
+          <div className=" w-full mt-5">
+            {Object.entries(history).slice(0,4).map(([mangaId, data], index) => <HistoryCard key={index} id={mangaId} history={data} handleDelete={() => removeHistory(mangaId)} />)}
           </div>
         </div>
+
+
         {/*Popular tag*/}
-        <div className="w-full rounded-3xl">
+        <div className="w-full rounded-3xl hidden lg:block">
           <h2 className="text-2xl font-bold mb-3">Khám phá các thể loại nổi tiếng</h2>
           {tag?.map((item, idx) => {
             return <TagItem key={idx} name={item.attributes.name.en} />
           })}
           <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white m-2 ">Xem tất cả</button>
         </div>
+
+        {/*Popular*/}
+        <div>
+          <div className="flex justify-between">
+            <h2 className="text-2xl font-bold">Truyện Top</h2>
+          </div>
+          {/* <div className="flex my-2">
+            <div className="flex-1 w-full bg-red-400 text-center text-white py-1 rounded-md">Top Tuần</div>
+            <div className="flex-1 w-full text-center rounded-md">Top Tháng</div>
+            <div className="flex-1 w-full text-center rounded-md">Toàn thời gian</div>
+          </div> */}
+          <div className=" w-full mt-5">
+            {rankingLoading ? <div>Loading</div> : ranking?.slice(0,5).map((data, index) => <RankingCard data={data} rank={index} key={index} />)}
+          </div>
+        </div>
       </section>
+
+
 
       {/* Latest update */}
       <section className="mb-8 w-full">
@@ -123,8 +117,8 @@ export default function Home() {
           <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">Xem tất cả</button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          {mangas && chapters && Object.entries(chapters).slice(0, 18).map(([mangaId, chapterList], idx) => {
-            return <DetailCard key={idx} manga={mangas[mangaId]} chapter={chapterList[0]} />
+          {Object.entries(latestUpdates).length < 1 ? <div>Loading</div> : Object.entries(latestUpdates).slice(0, 18).map(([mangaId, {manga, chapterList}], idx) => {
+            return <DetailCard key={idx} manga={manga} chapter={chapterList[0]} />
           })}
         </div>
       </section>

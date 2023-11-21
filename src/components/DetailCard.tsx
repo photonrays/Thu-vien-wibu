@@ -7,11 +7,15 @@ import { formatNowDistance } from '@/utils/dateFns'
 import { Link } from 'react-router-dom'
 
 type Props = {
-  manga: ExtendManga
+  manga?: ExtendManga
   chapter: ExtendChapter
 }
 
 export function DetailCard(props: Props) {
+  if (props.manga == undefined) {
+    return <div>Loading</div>
+  }
+
   return (
     <div>
       <div className="flex p-4">

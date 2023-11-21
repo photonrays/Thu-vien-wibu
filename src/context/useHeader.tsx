@@ -18,7 +18,7 @@ export const HeaderContext = createContext<HeaderContextProps>({
   setIsSticky: () => null
 });
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function HeaderProvider({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [titleColor, setTitleColor] = useState('#000000')
   const [isSticky, setIsSticky] = useState(true)
