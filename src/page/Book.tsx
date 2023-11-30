@@ -187,7 +187,7 @@ export default function Book() {
               <button className='bg-slate-200 py-1 px-3 rounded-md'>Collapse</button>
             </div>
             <div>
-              {chapters && Object.entries(chapters).map(([volume, chapterList], index) => <Chapter key={index} volume={volume} chapterList={chapterList} />)}
+              {chapters && Object.entries(chapters).reverse().map(([volume, chapterList], index) => <Chapter key={index} volume={volume} chapterList={chapterList} />)}
             </div>
           </div>
         </div>

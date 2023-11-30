@@ -86,7 +86,7 @@ export default function Home() {
         <div className="w-full rounded-3xl hidden lg:block">
           <h2 className="text-2xl font-bold mb-3">Khám phá các thể loại nổi tiếng</h2>
           {tag?.map((item, idx) => {
-            return <TagItem key={idx} name={item.attributes.name.en} />
+            return <TagItem key={idx} item={item} />
           })}
           <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white m-2 ">Xem tất cả</button>
         </div>

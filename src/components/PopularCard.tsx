@@ -33,7 +33,7 @@ export default function PopularCard({ data }: { data?: ExtendManga }) {
             </div>
             {/* Book cover */}
             <div className='flex-shrink-0 overflow-hidden max-w-[190px] h-full rounded-lg'>
-                <img src={coverArt} alt="Book Cover" className='object-contain h-full rounded-lg' loading='lazy' />
+                <img referrerPolicy="no-referrer" src={coverArt} alt="Book Cover" className='object-contain h-full rounded-lg' loading='lazy' />
             </div>
             {/* Book details */}
             <div className='ml-4 h-full flex flex-col'>

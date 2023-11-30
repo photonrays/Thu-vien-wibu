@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 function ChapterDetail({chapter}: {chapter: ExtendChapter}) {
     return (
-        <Link to={`/chuong/${chapter.id}/1`} className="grid sm:grid-cols-chapter-grid grid-cols-2 p-2 bg-slate-100 mb-2 hover:bg-slate-300">
+        <Link to={`/chuong/${chapter.id}`} className="grid sm:grid-cols-chapter-grid grid-cols-2 p-2 bg-slate-100 mb-2 hover:bg-slate-300">
             <div>
                 <span className="flex items-center"><Iconify icon='ph:eye' className="inline mr-2" /><span className="line-clamp-1">Chương {chapter.attributes.chapter}</span></span>
                 <span className="flex items-center"><Iconify icon='octicon:people-24' className="inline mr-2" /><span className="line-clamp-1">{chapter.scanlation_group?.attributes?.name}</span></span>

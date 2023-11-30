@@ -22,7 +22,7 @@ export function DetailCard(props: Props) {
         <Link to={`/truyen-tranh/${props.manga.id}`} className='inline-block w-28 h-28 rounded-2xl shrink-0'><img src={getCoverArt(props.manga) || NoImg} className='w-full h-full object-cover rounded-2xl' /></Link>
         <div className='ml-2 flex flex-col justify-between w-full text-ellipsis'>
           <Link to={`/truyen-tranh/${props.manga.id}`} className='text-lg font-bold mb-1 line-clamp-2 break-all'>{props.manga?.attributes?.title['en'] || ""}</Link>
-          <Link to={`/chuong/${props.chapter.id}/1`} className='text-sm text-slate-500 mb-1 line-clamp-1'>{getChapterTitle(props.chapter) || ""}</Link>
+          <Link to={`/chuong/${props.chapter.id}`} className='text-sm text-slate-500 mb-1 line-clamp-1'>{getChapterTitle(props.chapter) || ""}</Link>
           <div className='flex items-center justify-between gap-2'>
             <p className='text-sm text-slate-500 items-center line-clamp-1'>
               <Iconify icon='fluent:people-16-regular' className='inline mr-1' />

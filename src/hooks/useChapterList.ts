@@ -3,9 +3,11 @@ import { getMangaFeed } from "@/api/manga"
 import useSWR from 'swr'
 
 
-export default function useChapterList(mangaId: string) {
+export default function useChapterList(mangaId: string | null | undefined) {
+    console.log("fetching chapter list...")
     let chapters: Record<string, ExtendChapter[]> = {}
-    const { data, isLoading } = useSWR(`manga/${mangaId}/feed`, () => getMangaFeed(mangaId))
+    const ids: string[] = [];
+    const { data, isLoading } = useSWR(mangaId ? [`mangaFeed`, mangaId] : null, () => getMangaFeed(mangaId!))
     if (data) {
         const sortedChapters: Record<string, ExtendChapter[]> = {}
         for (const chapter of data) {
@@ -16,7 +18,16 @@ export default function useChapterList(mangaId: string) {
             sortedChapters[volume].push(chapter)
         }
         chapters = sortedChapters
-    }
 
-    return { chapters, data, isLoading }
+        
+        const sortedVolumes = Object.keys(sortedChapters).sort((a, b) => Number(b) - Number(a));
+        for (const volume of sortedVolumes) {
+            const chapterList = sortedChapters[volume];
+            for (const chapter of chapterList) {
+                ids.push(chapter.id);
+            }
+        }
+    }
+    
+    return { chapters, chaptersLoading: isLoading, chapterIdList: ids }
 }

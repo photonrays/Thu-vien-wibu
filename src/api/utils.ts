@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 export function getPreviousMonthDateTimeUTC() {
     const now = new Date();
     const previousMonthDateTime = new Date(now.getTime());
@@ -19,5 +22,10 @@ export function getPreviousMonthDateTimeUTC() {
   
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   }
+
+  export const filterSomeAttribute = (arr: any[], selector: any, attribute: string) => {
+    const filtered = arr?.filter(val => val?.type === selector)[0];
+    return attribute ? filtered?.attributes[attribute] || 'No ' + attribute : filtered;
+}
   
   

@@ -17,7 +17,7 @@ const routes: RouteObject[] = [
         element: <Book />,
     },
     {
-        path: '/chuong/:id/:page',
+        path: '/chuong/:id/',
         element: <Chapter />,
     },
     {
@@ -30,6 +30,10 @@ const routes: RouteObject[] = [
     },
     {
         path: '/tim-kiem',
+        element: <Search />,
+    },
+    {
+        path: '/tim-kiem/:tagId',
         element: <Search />,
     },
     {
