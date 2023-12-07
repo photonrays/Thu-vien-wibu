@@ -33,10 +33,6 @@ const routes: RouteObject[] = [
         element: <Search />,
     },
     {
-        path: '/tim-kiem/:tagId',
-        element: <Search />,
-    },
-    {
         path: '/cai-dat',
         element: <Setting />,
     }

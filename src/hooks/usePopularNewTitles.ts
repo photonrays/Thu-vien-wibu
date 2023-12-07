@@ -1,4 +1,4 @@
-import { getMangaList, GetSearchMangaRequestOptions, MangaContentRating } from "@/api/manga"
+import { getExtendedMangaList, GetSearchMangaRequestOptions, MangaContentRating } from "@/api/manga"
 import { Includes, Order } from "@/api/static";
 import { getPreviousMonthDateTimeUTC } from "@/api/utils";
 import useSWR from 'swr'
@@ -13,7 +13,7 @@ export default function usePopularNewTitles() {
         createdAtSince: getPreviousMonthDateTimeUTC(),
         availableTranslatedLanguage: ["vi"]
       };
-    const {data, isLoading} = useSWR('popularNewTitle', () => getMangaList(requestParams)) 
+    const {data, isLoading} = useSWR('popularNewTitle', () => getExtendedMangaList(requestParams)) 
 
     return {populars: data, popularLoading: isLoading}
 }

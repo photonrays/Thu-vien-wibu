@@ -1,12 +1,15 @@
 import Select from "@/components/Select";
 import { Icon } from "@iconify/react";
 import { useState, useEffect } from "react"
-import { GetSearchMangaRequestOptions, MangaContentRating, MangaPublicationDemographic, getMangaList, getTag, MangaPublicationStatus } from "@/api/manga";
+import { GetSearchMangaRequestOptions, MangaContentRating, MangaPublicationDemographic, getTag, MangaPublicationStatus } from "@/api/manga";
 import { Tag } from "@/api/schema";
 import { Includes, Order } from "@/api/static";
 import Card from "@/components/Card";
 import { ExtendManga } from "@/api/extend";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import convertSearchParams from "@/utils/convertSearchParams";
+import useSearch from "@/hooks/useSearch";
+import buildQueryString from "@/utils/buildQueryString";
 
 const sortByData = ['Đánh giá giảm dần', 'Đánh giá tăng dần', 'Lượt theo dõi giảm dần', 'Lượt theo dõi tăng dần', 'Mới thêm gần đây', 'Thêm cũ nhất', 'Năm tăng dần', 'Năm giảm dần']
 const contentRatingData = [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.PORNOGRAPHIC, MangaContentRating.SUGGESTIVE]
@@ -16,13 +19,17 @@ const publicationStatusData = [MangaPublicationStatus.ONGOING, MangaPublicationS
 
 export default function Search() {
   const navigate = useNavigate();
-  const { tagId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const options = convertSearchParams(searchParams)
+  console.log("option: ", options)
+  const { mangaList, data, mangaListLoading } = useSearch(options)
+  const offset = searchParams.get("offset") ? parseInt(searchParams.get("offset")!) : 0
+  const total = data ? data.total : 0
+  const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : 24
+  const page = Math.floor(offset / limit)
 
-  const [searchValue, setSearchValue] = useState('')
-  const [searchResult, searchResultLoading] = useState<ExtendManga[]>([]);
+  const [searchValue, setSearchValue] = useState(searchParams.get('title') || '')
   const [showFilter, setShowFilter] = useState(false)
-  const [page, setPage] = useState(1)
-
   const [sort, setSort] = useState<string>('none')
   const [contentRating, setContentRating] = useState<MangaContentRating[]>([])
   const [tagData, setTagData] = useState<Tag[]>([]);
@@ -55,14 +62,11 @@ export default function Search() {
   };
 
   const handleSearch = () => {
-    const searchParams: GetSearchMangaRequestOptions = {
-      title: searchValue,
-      includes: [Includes.COVER_ART],
-      order: { followedCount: Order.DESC },
-      limit: 30,
-      offset: (page - 1) * 30,
-      availableTranslatedLanguage: ['vi']
-    };
+    const searchParams: GetSearchMangaRequestOptions = {};
+
+    if (searchValue.length !== 0) {
+      searchParams.title = searchValue
+    }
 
     if (tag.length !== 0) {
       searchParams.includedTags = tag.map((t) => t.id)
@@ -80,29 +84,13 @@ export default function Search() {
       searchParams.contentRating = contentRating
     }
 
-    getMangaList(searchParams).then(data => {
-      console.log(data)
-      searchResultLoading(data)
-    }).catch(e => console.log(e))
+    navigate(`${buildQueryString(searchParams)}`)
+
+    // getExtendedMangaList(searchParams).then(data => {
+    //   console.log(data)
+    //   searchResultLoading(data)
+    // }).catch(e => console.log(e))
   }
-
-  useEffect(() => {
-    if (tagId) {
-      const searchParams: GetSearchMangaRequestOptions = {
-        includes: [Includes.COVER_ART],
-        order: { followedCount: Order.DESC },
-        limit: 30,
-        offset: (page - 1) * 30,
-        availableTranslatedLanguage: ['vi'],
-        includedTags: [tagId]
-      };
-
-      getMangaList(searchParams).then(data => {
-        console.log(data)
-        searchResultLoading(data)
-      }).catch(e => console.log(e))
-    }
-  }, [tagId])
 
   return (
     <div className="w-full px-5 min-h-screen">
@@ -137,7 +125,7 @@ export default function Search() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 mt-5">
-        {searchResult.map((manga: ExtendManga, idx) => <Card manga={manga} key={idx} />)}
+        {mangaList.map((manga: ExtendManga, idx) => <Card manga={manga} key={idx} />)}
       </div>
     </div>
   )

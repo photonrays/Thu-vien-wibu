@@ -1,4 +1,4 @@
-import { getMangaList, GetSearchMangaRequestOptions, MangaContentRating } from "@/api/manga"
+import { getExtendedMangaList, GetSearchMangaRequestOptions, MangaContentRating } from "@/api/manga"
 import { Includes, Order } from "@/api/static";
 import useSWR from 'swr'
 
@@ -13,7 +13,7 @@ export default function useMangaRanking(page: number) {
         offset: (page - 1) * 15,
         availableTranslatedLanguage: ['vi']
       };
-    const {data, isLoading} = useSWR('mangaRanking', () => getMangaList(requestParams)) 
+    const {data, isLoading} = useSWR('mangaRanking', () => getExtendedMangaList(requestParams)) 
 
     return {ranking: data, rankingLoading: isLoading}
 }

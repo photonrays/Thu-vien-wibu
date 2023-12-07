@@ -296,7 +296,19 @@ export type GetMangaTagResponse = TagResponse;
  * FUNCTION DEFINITIONS
  ***********************/
 
-export const getMangaList = async (requestParams: GetSearchMangaRequestOptions): Promise<ExtendManga[]> => {
+export const getMangaList = async (requestParams: GetSearchMangaRequestOptions): Promise<GetSearchMangaResponse> => {
+  if (!requestParams.includes) {
+    requestParams.includes = [Includes.COVER_ART]
+  }
+  console.log(requestParams)
+
+  const { data } = await axiosInstance.get<GetSearchMangaResponse>("manga", {
+    params: requestParams,
+  })
+  return data;
+}
+
+export const getExtendedMangaList = async (requestParams: GetSearchMangaRequestOptions): Promise<ExtendManga[]> => {
   if (!requestParams.includes) {
     requestParams.includes = [Includes.COVER_ART]
   }

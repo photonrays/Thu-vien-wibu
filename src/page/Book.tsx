@@ -88,9 +88,9 @@ export default function Book() {
         {/* Utility button and statistic */}
         <div className='sm:pl-[17rem] px-8 pt-2'>
           <div className='mt-4 flex gap-2 '>
-            <button className='bg-primary text-white md:px-10 px-3 py-3 rounded-md flex items-center gap-2 shadow-primaryButton'><Iconify icon='mdi:bookmark-outline' width={20} color='#ffffff' /><span className='hidden md:inline'>Add to Library</span></button>
+            <button className='bg-primary text-white md:px-10 px-3 py-3 rounded-md flex items-center gap-2 shadow-primaryButton'><Iconify icon='mdi:bookmark-outline' width={20} color='#ffffff' /><span className='hidden md:inline'>Thêm vào thư viện</span></button>
             <button className='bg-slate-200 text-white px-3 py-3 rounded-md'><Iconify icon="iconamoon:star-light" width={20} color='#000000' /></button>
-            <button className='bg-slate-200 text-black lg:px-6 px-3 py-3 rounded-md flex items-center gap-2'><Iconify icon="ion:book-outline" width={20} color='#000000' /><span className='lg:inline sm:hidden inline'>Start reading</span></button>
+            <button className='bg-slate-200 text-black lg:px-6 px-3 py-3 rounded-md flex items-center gap-2'><Iconify icon="ion:book-outline" width={20} color='#000000' /><span className='lg:inline sm:hidden inline'>Bắt đầu đọc</span></button>
           </div>
 
           {/* book's tags */}
@@ -183,7 +183,7 @@ export default function Book() {
 
           <div className='grow'>
             <div className='flex justify-between'>
-              <button className='bg-slate-200 py-1 px-3 rounded-md'>Descending</button>
+              <button className='bg-slate-200 py-1 px-3 rounded-md'>Giảm dần</button>
               <button className='bg-slate-200 py-1 px-3 rounded-md'>Collapse</button>
             </div>
             <div>

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import Iconify from "../components/Iconify"
 import { useHeader } from "@/context/useHeader";
 import { useState, useEffect, useRef } from 'react'
-import { getMangaList } from "@/api/manga";
+import { getExtendedMangaList } from "@/api/manga";
 import { ExtendManga } from "@/api/extend";
 import { getMangaTitle } from "@/utils/getTitles";
 import getCoverArt from "@/utils/getCoverArt";
@@ -26,7 +26,7 @@ export default function Header() {
         }
         const delayDebounceFn = setTimeout(() => {
             if (searchValue.length > 0) {
-                getMangaList({ title: searchValue, hasAvailableChapters: 'true', availableTranslatedLanguage: ['vi'] }).then(data => setSearchResult(data)).catch(e => console.log(e))
+                getExtendedMangaList({ title: searchValue, hasAvailableChapters: 'true', availableTranslatedLanguage: ['vi'] }).then(data => setSearchResult(data)).catch(e => console.log(e))
             }
         }, 1000)
         return () => clearTimeout(delayDebounceFn)
@@ -87,7 +87,7 @@ export default function Header() {
                     ref={wrapperRef}
                     onClick={() => setShowResult(true)} />
                 {showResult && searchResult.length > 0 && <div ref={resultRef} className={`w-[600px] max-h-[600px] overflow-auto bg-white absolute mt-1 rounded-xl px-4`}>
-                    <Link to={`/tim-kiem`} className="w-full flex justify-end items-center gap-1 my-2"><p className="">Tìm kiếm nâng cao</p><Icon icon="ph:arrow-right-bold" width={20} height={20} /></Link>
+                    <Link to={`/tim-kiem?title=${searchValue}`} className="w-full flex justify-end items-center gap-1 my-2"><p className="">Tìm kiếm nâng cao</p><Icon icon="ph:arrow-right-bold" width={20} height={20} /></Link>
                     {searchResult.map((manga, index) => {
                         return (
                             <Link to={`/truyen-tranh/${manga.id}`} key={index} className="w-full h-24 flex p-2 bg-gray-100 hover:bg-gray-200 rounded-md my-2">
