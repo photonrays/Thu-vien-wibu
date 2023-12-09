@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ExtendChapter } from '@/api/extend'
-import Iconify from '../Iconify'
 import './Dropdown.scss'
 import { Link } from 'react-router-dom'
+import { Icon } from '@iconify/react'
 
 type DropdownType = {
   title?: string,
@@ -20,7 +20,7 @@ export default function Dropdown({ title, data = undefined, isOpen, state, setSt
         <span className='block text-sm ml-3'>{title}</span>
         <span className='block ml-3'>{state}</span>
       </div>
-      <Iconify icon='ep:arrow-down-bold' className={`mr-3 transform ${isOpen ? 'rotate-180' : 'rotate-0'} transition-transform duration-200 ease-in-out`} />
+      <Icon icon='ep:arrow-down-bold' className={`mr-3 transform ${isOpen ? 'rotate-180' : 'rotate-0'} transition-transform duration-200 ease-in-out`} />
       <div className={`absolute top-full w-full max-h-[400px] overflow-auto rounded-md dropdown z-50 bg-gray-200 p-1 select-none ${isOpen ? 'active' : ''}`}>
         {data?.map((data, index) =>
           <div key={index} className={`w-full text-lg py-1 pl-2 flex items-center hover:bg-primary hover:text-white mb-1 rounded-md ${state == data ? 'bg-primary text-white' : ''} cursor-pointer`} onClick={() => setState(data)}>

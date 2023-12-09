@@ -41,6 +41,9 @@ export default function convertSearchParams(params: URLSearchParams): GetSearchM
     if (params.get("order[title]")) {
         result.order.title = params.get("order[title]") as Order
     }
+    if (params.get("order[updatedAt]")) {
+        result.order.updatedAt = params.get("order[updatedAt]") as Order
+    }
     if (params.get("order[createdAt]")) {
         result.order.createdAt = params.get("order[createdAt]") as Order
     }

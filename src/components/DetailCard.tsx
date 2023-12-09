@@ -2,9 +2,9 @@ import { ExtendChapter, ExtendManga } from '@/api/extend'
 import NoImg from '@/assets/No-Image-Placeholder.png'
 import getChapterTitle from '@/utils/getChapterTitle'
 import getCoverArt from '@/utils/getCoverArt'
-import Iconify from './Iconify'
 import { formatNowDistance } from '@/utils/dateFns'
 import { Link } from 'react-router-dom'
+import { Icon } from '@iconify/react'
 
 type Props = {
   manga?: ExtendManga
@@ -25,7 +25,7 @@ export function DetailCard(props: Props) {
           <Link to={`/chuong/${props.chapter.id}`} className='text-sm text-slate-500 mb-1 line-clamp-1'>{getChapterTitle(props.chapter) || ""}</Link>
           <div className='flex items-center justify-between gap-2'>
             <p className='text-sm text-slate-500 items-center line-clamp-1'>
-              <Iconify icon='fluent:people-16-regular' className='inline mr-1' />
+              <Icon icon='fluent:people-16-regular' className='inline mr-1' />
               {props.chapter.scanlation_group?.attributes?.name || ""}
             </p>
             <p className='text-sm text-slate-500 flex-shrink-0'>

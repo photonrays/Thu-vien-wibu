@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import Iconify from '@/components/Iconify'
 import Chapter from '@/components/Chapter'
 import { useEffect, useState } from 'react'
 import { useHeader } from '@/context/useHeader'
@@ -13,13 +12,17 @@ import { MangaStatistic } from '@/api/schema'
 import StatisticButton from '@/components/StatisticButton'
 import useChapterList from '@/hooks/useChapterList'
 import { useManga } from '@/context/useManga'
+import useFollow from '@/hooks/useFollow'
+import { Icon } from '@iconify/react'
 
 export default function Book() {
   const { isSidebarOpen, setTitleColor } = useHeader();
   const { id } = useParams();
-  const {manga, setManga} = useManga();
+  const { manga, setManga } = useManga();
   const [statistic, setStatistic] = useState<MangaStatistic>();
-  const {chapters} = useChapterList(id ?? '');
+  const { chapters } = useChapterList(id ?? '');
+  const { follow, addFollow, removeFollow } = useFollow();
+  console.log("re-render")
 
   useEffect(() => {
     setTitleColor("#ffffff")
@@ -73,10 +76,10 @@ export default function Book() {
               </div>
               <p className='xl:text-xl lg:text-lg md:text-base sm:text-sm text-xs text-black sm:text-white'>{author === artist ? author : author + ", " + artist}</p>
               <div className='pt-4 flex gap-2 items-center sm:hidden'>
-                <span className='px-1 flex items-center text-primary'><Iconify icon="iconamoon:star-light" width={20} className='text-primary inline pr-1' />{statistic?.rating['bayesian'].toFixed(2)}</span>
-                <span className='px-1 flex items-center text-black'><Iconify icon="material-symbols:bookmark-outline" width={20} className='text-black inline pr-1' />{statistic?.follows && formatter.format(statistic?.follows)}</span>
-                <span className='px-1 flex items-center text-black'><Iconify icon="majesticons:comment-line" width={20} className='text-black inline pr-1' />{statistic?.comments?.repliesCount && formatter.format(statistic?.comments?.repliesCount)}</span>
-                <span className='px-1 flex items-center text-black'><Iconify icon="ph:eye" width={20} className='text-black inline pr-1' />N/A</span>
+                <span className='px-1 flex items-center text-primary'><Icon icon="iconamoon:star-light" width={20} className='text-primary inline pr-1' />{statistic?.rating['bayesian'].toFixed(2)}</span>
+                <span className='px-1 flex items-center text-black'><Icon icon="material-symbols:bookmark-outline" width={20} className='text-black inline pr-1' />{statistic?.follows && formatter.format(statistic?.follows)}</span>
+                <span className='px-1 flex items-center text-black'><Icon icon="majesticons:comment-line" width={20} className='text-black inline pr-1' />{statistic?.comments?.repliesCount && formatter.format(statistic?.comments?.repliesCount)}</span>
+                <span className='px-1 flex items-center text-black'><Icon icon="ph:eye" width={20} className='text-black inline pr-1' />N/A</span>
               </div>
             </div>
           </div>
@@ -88,24 +91,28 @@ export default function Book() {
         {/* Utility button and statistic */}
         <div className='sm:pl-[17rem] px-8 pt-2'>
           <div className='mt-4 flex gap-2 '>
-            <button className='bg-primary text-white md:px-10 px-3 py-3 rounded-md flex items-center gap-2 shadow-primaryButton'><Iconify icon='mdi:bookmark-outline' width={20} color='#ffffff' /><span className='hidden md:inline'>Thêm vào thư viện</span></button>
-            <button className='bg-slate-200 text-white px-3 py-3 rounded-md'><Iconify icon="iconamoon:star-light" width={20} color='#000000' /></button>
-            <button className='bg-slate-200 text-black lg:px-6 px-3 py-3 rounded-md flex items-center gap-2'><Iconify icon="ion:book-outline" width={20} color='#000000' /><span className='lg:inline sm:hidden inline'>Bắt đầu đọc</span></button>
+            {manga != null ? (Object.keys(follow).includes(manga.id) ?
+              <button className='bg-primary text-white md:px-10 px-3 py-3 rounded-md flex items-center gap-2 shadow-primaryButton' onClick={() => removeFollow(manga.id)}><Icon icon="mdi:book-check-outline" width={20} color='#ffffff'/><span className='hidden md:inline'>Xóa khỏi thư viện</span></button>
+              : <button className='bg-primary text-white md:px-10 px-3 py-3 rounded-md flex items-center gap-2 shadow-primaryButton' onClick={() => addFollow(manga.id, { mangaTitle: getMangaTitle(manga), cover: getCoverArt(manga) })}><Icon icon="mdi:book-outline" width={20} color='#ffffff' /><span className='hidden md:inline'>Thêm vào thư viện</span></button>)
+              : <div>Loading</div>
+            }
+            {/* <button className='bg-slate-200 text-white px-3 py-3 rounded-md'><Icon icon="iconamoon:star-light" width={20} color='#000000' /></button> */}
+            <button className='bg-slate-200 text-black lg:px-6 px-3 py-3 rounded-md flex items-center gap-2'><Icon icon="ion:book-outline" width={20} color='#000000' /><span className='lg:inline sm:hidden inline'>Bắt đầu đọc</span></button>
           </div>
 
           {/* book's tags */}
           <div className='mt-4 flex gap-2 items-center flex-wrap'>
             {manga?.attributes.contentRating === "suggestive" && <Tag contentRating={manga?.attributes.contentRating} />}
             {manga?.attributes.tags.map((obj, index) => <Tag key={index} data={obj} />)}
-            <span className='text-xs font-bold px-1 uppercase flex items-center'><Iconify icon="icon-park-outline:dot" width={20} className='inline' color='#04d000' style={{ color: `${manga?.attributes.status ? '#04d000' : '#ff4040'}` }} />{`Xuất bản: ${manga?.attributes.year || ''}, ${manga?.attributes.status || ''}`}</span>
+            <span className='text-xs font-bold px-1 uppercase flex items-center'><Icon icon="icon-park-outline:dot" width={20} className='inline' color='#04d000' style={{ color: `${manga?.attributes.status ? '#04d000' : '#ff4040'}` }} />{`Xuất bản: ${manga?.attributes.year || ''}, ${manga?.attributes.status || ''}`}</span>
           </div>
 
           {/* books statistic */}
           <div className='pt-4 sm:flex hidden gap-2 items-center'>
-            <span className='px-1 flex items-center text-primary'><Iconify icon="iconamoon:star-light" width={20} className='text-primary inline pr-1' />{statistic?.rating['bayesian'].toFixed(2)}</span>
-            <span className='px-1 flex items-center text-black'><Iconify icon="material-symbols:bookmark-outline" width={20} className='text-black inline pr-1' />{statistic?.follows && formatter.format(statistic?.follows)}</span>
-            <span className='px-1 flex items-center text-black'><Iconify icon="majesticons:comment-line" width={20} className='text-black inline pr-1' />{statistic?.comments?.repliesCount && formatter.format(statistic?.comments?.repliesCount)}</span>
-            <span className='px-1 flex items-center text-black'><Iconify icon="ph:eye" width={20} className='text-black inline pr-1' />N/A</span>
+            <span className='px-1 flex items-center text-primary'><Icon icon="iconamoon:star-light" width={20} className='text-primary inline pr-1' />{statistic?.rating['bayesian'].toFixed(2)}</span>
+            <span className='px-1 flex items-center text-black'><Icon icon="material-symbols:bookmark-outline" width={20} className='text-black inline pr-1' />{statistic?.follows && formatter.format(statistic?.follows)}</span>
+            <span className='px-1 flex items-center text-black'><Icon icon="majesticons:comment-line" width={20} className='text-black inline pr-1' />{statistic?.comments?.repliesCount && formatter.format(statistic?.comments?.repliesCount)}</span>
+            <span className='px-1 flex items-center text-black'><Icon icon="ph:eye" width={20} className='text-black inline pr-1' />N/A</span>
           </div>
         </div>
 
@@ -147,8 +154,8 @@ export default function Book() {
         </div>
 
         {/* More book info + chapter list */}
-        <div className='flex gap-4 px-8 '>
-          <div className='min-w-[400px] max-w-[25%] gap-4 xl:flex hidden flex-wrap'>
+        <div className='flex gap-4 px-8'>
+          <div className='min-w-[400px] max-w-[25%] gap-4 xl:flex hidden flex-col'>
             <div>
               <span className='font-bold text-lg text-left'>Tác giả</span>
               <div className='flex gap-2 items-center mt-2 mb-4 flex-wrap'>

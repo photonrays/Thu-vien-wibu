@@ -3,7 +3,6 @@ import { DetailCard } from "@/components/DetailCard";
 import { useEffect, useState, useRef } from 'react';
 import * as MangaApi from "@/api/manga";
 import { Tag } from '../api/schema';
-import Iconify from "@/components/Iconify";
 import { TagItem } from "@/components/TagItem";
 import PopularCard from "@/components/PopularCard";
 import usePopularNewTitles from "@/hooks/usePopularNewTitles";
@@ -12,6 +11,7 @@ import { HistoryCard } from "@/components/HistoryCard";
 import useReadingHistory from "@/hooks/useReadingHistory";
 import useMangaRanking from "@/hooks/useMangaRanking";
 import RankingCard from "@/components/RankingCard";
+import { Icon } from "@iconify/react";
 
 export default function Home() {
   const settings: Settings = {
@@ -64,8 +64,8 @@ export default function Home() {
               return <PopularCard key={index} data={obj} />
             })}
           </Slider>
-          <Iconify className="absolute top-1/2 -translate-y-1/2 left-0 hover:cursor-pointer bg-slate-100 rounded-full" icon="iconamoon:arrow-left-2" onClick={previous} width={40} />
-          <Iconify className="absolute top-1/2 -translate-y-1/2 right-0 hover:cursor-pointer bg-slate-100 rounded-full" icon="iconamoon:arrow-right-2" onClick={next} width={40} />
+          <Icon className="absolute top-1/2 -translate-y-1/2 left-0 hover:cursor-pointer bg-slate-100 rounded-full" icon="iconamoon:arrow-left-2" onClick={previous} width={40} />
+          <Icon className="absolute top-1/2 -translate-y-1/2 right-0 hover:cursor-pointer bg-slate-100 rounded-full" icon="iconamoon:arrow-right-2" onClick={next} width={40} />
         </div>}
       </section>
 
@@ -77,7 +77,7 @@ export default function Home() {
             <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">Xem tất cả</button>
           </div>
           <div className=" w-full mt-5">
-            {Object.entries(history).slice(0,4).map(([mangaId, data], index) => <HistoryCard key={index} id={mangaId} history={data} handleDelete={() => removeHistory(mangaId)} />)}
+            {Object.entries(history).slice(0,4).map(([mangaId, data], index) => <HistoryCard key={index} id={mangaId} data={data} handleDelete={() => removeHistory(mangaId)} />)}
           </div>
         </div>
 

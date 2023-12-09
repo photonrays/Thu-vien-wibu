@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom"
-import Iconify from "../components/Iconify"
 import { useHeader } from "@/context/useHeader";
 import { useState, useEffect, useRef } from 'react'
 import { getExtendedMangaList } from "@/api/manga";
@@ -74,11 +73,11 @@ export default function Header() {
         <div className={`w-full h-[64px] flex items-center justify-between ${isSticky ? 'sticky' : ''} top-0 bg-white ${scrollY && 'border-b-2 border-primary'} z-20 py-2 pl-6 mb-4`}
             style={{ backgroundColor: `rgba(255, 255, 255, ${Math.max(0, scrollY / 64)})` }}>
             <div className={`font-bold text-2xl flex items-center ${isSidebarOpen ? 'hidden' : 'inline'}`} style={{ color: textColor }}>
-                <Iconify icon="iconoir:menu-scale" vFlip={true} style={{ color: textColor }} className="hover:cursor-pointer" onClick={open} />
-                <Link to={"/"}><Iconify icon="raphael:book" className="text-primary text-5xl md:3xl inline-block ml-3" />WibuLib</Link>
+                <Icon icon="iconoir:menu-scale" vFlip={true} style={{ color: textColor }} className="hover:cursor-pointer" onClick={open} />
+                <Link to={"/"}><Icon icon="raphael:book" className="text-primary text-5xl md:3xl inline-block ml-3" />WibuLib</Link>
             </div>
             <div className='relative mr-4 bg-[#F6F6F6] rounded-lg p-2 md:p-0 ml-auto'>
-                <Iconify icon="radix-icons:magnifying-glass" className="text-[24px] md:absolute inline top-1/2 md:-translate-y-1/2 left-4" />
+                <Icon icon="radix-icons:magnifying-glass" className="text-[24px] md:absolute inline top-1/2 md:-translate-y-1/2 left-4" />
                 <input className="bg-[#F6F6F6] w-[300px] p-3 pl-12 text-md text-gray-900 rounded-lg hidden md:block transition-all ease-in focus:w-[600px] outline-primary"
                     type="search"
                     placeholder="Tìm kiếm truyện, tác giả..."
