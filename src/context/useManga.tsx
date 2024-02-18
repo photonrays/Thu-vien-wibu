@@ -46,6 +46,7 @@ export function MangaProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (Object.entries(latestChapters).length > 0) {
+            console.log(latestChapters)
             getMangasByIds(Object.keys(latestChapters)).then(data => {
                 const updates: Record<string, LatestUpdateProps> = {}
                 Object.entries(data).forEach(([mangaId, manga]) => updates[mangaId] = { manga, chapterList: latestChapters[mangaId] })
@@ -53,6 +54,8 @@ export function MangaProvider({ children }: { children: React.ReactNode }) {
             }).catch(e => console.log(e))
         }
     }, [latestChapters])
+
+    console.log(latestUpdates)
 
 
     return (

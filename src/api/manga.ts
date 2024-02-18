@@ -300,11 +300,12 @@ export const getMangaList = async (requestParams: GetSearchMangaRequestOptions):
   if (!requestParams.includes) {
     requestParams.includes = [Includes.COVER_ART]
   }
-  console.log(requestParams)
 
   const { data } = await axiosInstance.get<GetSearchMangaResponse>("manga", {
     params: requestParams,
   })
+
+  console.log(data);
   return data;
 }
 
@@ -313,7 +314,6 @@ export const getExtendedMangaList = async (requestParams: GetSearchMangaRequestO
     requestParams.includes = [Includes.COVER_ART]
   }
   let mangas: ExtendManga[] = []
-  console.log(requestParams)
 
   const { data } = await axiosInstance.get<GetSearchMangaResponse>("manga", {
     params: requestParams,

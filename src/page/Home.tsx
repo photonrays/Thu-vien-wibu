@@ -116,9 +116,9 @@ export default function Home() {
           <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">Xem tất cả</button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          {Object.entries(latestUpdates).length < 1 ? <div>Loading</div> : Object.entries(latestUpdates).slice(0, 18).map(([mangaId, {manga, chapterList}]) => {
+          {/* {Object.entries(latestUpdates).length < 1 ? <div>Loading</div> : Object.entries(latestUpdates).slice(0, 18).map(([mangaId, {manga, chapterList}]) => {
             return <DetailCard key={mangaId} manga={manga} chapter={chapterList[0]} />
-          })}
+          })} */}
         </div>
       </section>
 
