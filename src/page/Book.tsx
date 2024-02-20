@@ -23,7 +23,7 @@ export default function Book() {
   const { id } = useParams();
   const { manga, setManga } = useManga();
   const [statistic, setStatistic] = useState<MangaStatistic>();
-  const { chapters, total, limit } = useChapterList(id ?? '', page);
+  const { chapters, total, limit } = useChapterList(id ?? '', page, 24);
   const { follow, addFollow, removeFollow } = useFollow();
   const [isDescending, setIsDescending] = useState(true);
 

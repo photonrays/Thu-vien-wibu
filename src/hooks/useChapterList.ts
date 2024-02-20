@@ -3,13 +3,13 @@ import { getMangaFeed } from "@/api/manga";
 import extendRelationship from "@/utils/extendRelationship";
 import useSWR from "swr";
 
-export default function useChapterList(mangaId: string | null | undefined, page: number) {
+export default function useChapterList(mangaId: string | null | undefined, page: number, limit: number) {
   console.log("fetching chapter list...");
   let chapters: Record<string, ExtendChapter[]> = {};
   const ids: string[] = [];
   const { data, isLoading } = useSWR(
     mangaId ? [`mangaFeed`, mangaId, page] : null,
-    () => getMangaFeed(mangaId!, page)
+    () => getMangaFeed(mangaId!, page, limit)
   );
   if (data) {
     const sortedChapters: Record<string, ExtendChapter[]> = {};

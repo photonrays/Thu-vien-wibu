@@ -34,7 +34,7 @@ export default function Chapter() {
   const { manga, setManga } = useManga();
   const { addHistory } = useReadingHistory();
   const { chapter, chapterLoading } = useChapter(id);
-  const { chapters, chapterIdList } = useChapterList(chapter?.manga?.id);
+  const { chapters, chapterIdList } = useChapterList(chapter?.manga?.id, 1, 100);
   const { chapterPages, pageList, chapterPagesLoading } = useChapterPages(id);
 
   const navigate = useNavigate();
@@ -91,9 +91,8 @@ export default function Chapter() {
                 ? `Ch. ${chapter?.attributes.chapter}`
                 : "Oneshot"}
             </span>
-            <span className="text-center p-1 rounded-md bg-gray-100">{`Tr. ${
-              currPage || NaN
-            }/${pageList.length}`}</span>
+            <span className="text-center p-1 rounded-md bg-gray-100">{`Tr. ${currPage || NaN
+              }/${pageList.length}`}</span>
             <div
               className="text-center p-1 rounded-md bg-gray-100"
               onClick={() => setIsOpen((prev) => !prev)}
@@ -119,9 +118,8 @@ export default function Chapter() {
 
       {/* Menu */}
       <div
-        className={`fixed top-0 right-0 w-[300px] h-screen transition-all ${
-          isOpen ? "mr-0" : "mr-[-300px]"
-        } bg-white p-4 shadow-2xl`}
+        className={`fixed top-0 right-0 w-[300px] h-screen transition-all ${isOpen ? "mr-0" : "mr-[-300px]"
+          } bg-white p-4 shadow-2xl`}
       >
         <Icon
           icon="ph:x-bold"

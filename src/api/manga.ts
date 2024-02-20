@@ -4,7 +4,7 @@
 import { axiosInstance } from "./axiosInstance"
 import { MangaList, ChapterList, MangaResponse, TagResponse, MangaStatistic, GetMangasStatisticResponse } from './schema';
 import extendRelationship from "@/utils/extendRelationship";
-import { ExtendChapter, ExtendManga } from "./extend";
+import { ExtendManga } from "./extend";
 import { Order, Includes } from './static';
 // import * as util from './util';
 
@@ -398,10 +398,10 @@ export const getMangaStatistic = async (mangaId: string): Promise<MangaStatistic
   return data.statistics[mangaId]
 }
 
-export const getMangaFeed = async (mangaId: string, page: number): Promise<ChapterList> => {
+export const getMangaFeed = async (mangaId: string, page: number, limit: number): Promise<ChapterList> => {
   const requestParams: GetMangaIdFeedRequestOptions = {
-    limit: 24,
-    offset: (page - 1) * 24,
+    limit,
+    offset: (page - 1) * limit,
     includes: [Includes.SCANLATION_GROUP, Includes.USER],
     order: { volume: Order.DESC, chapter: Order.DESC },
     contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
