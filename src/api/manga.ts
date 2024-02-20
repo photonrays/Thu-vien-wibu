@@ -398,23 +398,23 @@ export const getMangaStatistic = async (mangaId: string): Promise<MangaStatistic
   return data.statistics[mangaId]
 }
 
-export const getMangaFeed = async (mangaId: string): Promise<ExtendChapter[]> => {
+export const getMangaFeed = async (mangaId: string, page: number): Promise<ChapterList> => {
   const requestParams: GetMangaIdFeedRequestOptions = {
-    limit: 96,
-    offset: 0,
+    limit: 24,
+    offset: (page - 1) * 24,
     includes: [Includes.SCANLATION_GROUP, Includes.USER],
     order: { volume: Order.DESC, chapter: Order.DESC },
     contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
     translatedLanguage: ['vi']
   };
 
-  let chapters: ExtendChapter[] = []
+  // let chapters: ExtendChapter[] = []
 
   const { data } = await axiosInstance.get<GetMangaIdFeedResponse>(`manga/${mangaId}/feed`, {
     params: requestParams,
   });
 
-  chapters = data.data.map(ch => extendRelationship(ch) as ExtendChapter)
+  // chapters = data.data.map(ch => extendRelationship(ch) as ExtendChapter)
 
-  return chapters
+  return data
 }

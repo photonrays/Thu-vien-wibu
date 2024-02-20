@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 
-function ChapterDetail({chapter}: {chapter: ExtendChapter}) {
+function ChapterDetail({ chapter }: { chapter: ExtendChapter }) {
     return (
         <Link to={`/chuong/${chapter.id}`} className="grid sm:grid-cols-chapter-grid grid-cols-2 p-2 bg-slate-100 mb-2 hover:bg-slate-300">
             <div>
@@ -33,9 +33,9 @@ export default function Chapter({ volume, chapterList }: { volume?: string, chap
     return (
         <div>
             <div className='flex justify-between mt-4'>
-                <span>{volume && volume !== '-1' ? `Tập ${volume}` : 'Không có tập nào'}</span>
-                <span>{chapterList && chapterList?.length > 0 ? `Chương ${chapterList[chapterList?.length - 1].attributes.chapter || 'N/A'} - ${chapterList[0].attributes.chapter || 'N/A'}` : 'N/A'}</span>
-                <span>{chapterList?.length} <Icon icon="ep:arrow-down-bold" className={`transition-all inline cursor-pointer ${collapse ? 'rotate-180' : ''}`} onClick={() => setCollapse(prev => !prev)} /></span>
+                <div className="flex-1"><p className="text-left">{volume && volume !== '-1' ? `Tập ${volume}` : 'Không có tập'}</p></div>
+                <div className="flex-1"><p className="text-center">{chapterList && chapterList?.length > 0 ? `Chương ${chapterList[chapterList?.length - 1].attributes.chapter || 'N/A'} - ${chapterList[0].attributes.chapter || 'N/A'}` : 'N/A'}</p></div>
+                <div className="flex-1"><p className="text-right">{chapterList?.length} <Icon icon="ep:arrow-down-bold" className={`transition-all inline cursor-pointer ${collapse ? 'rotate-180' : ''}`} onClick={() => setCollapse(prev => !prev)} /></p></div>
             </div>
             <div className={`w-full transition-all ${collapse ? 'h-0 overflow-hidden' : 'h-full'}`}>
                 {chapterList?.map((obj, index) => <ChapterDetail key={index} chapter={obj} />)}

@@ -3,7 +3,7 @@ import Chapter from '@/components/Chapter'
 import { useEffect, useState } from 'react'
 import { useHeader } from '@/context/useHeader'
 import Tag from '@/components/Tag'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { getMangaById } from '@/api/manga'
 import { getMangaStatistic } from '@/api/statistic'
 import getCoverArt from '@/utils/getCoverArt'
@@ -14,15 +14,18 @@ import useChapterList from '@/hooks/useChapterList'
 import { useManga } from '@/context/useManga'
 import useFollow from '@/hooks/useFollow'
 import { Icon } from '@iconify/react'
+import ReactPaginate from 'react-paginate'
 
 export default function Book() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = searchParams.get("page") ? parseInt(searchParams.get("page")!) : 1
   const { isSidebarOpen, setTitleColor } = useHeader();
   const { id } = useParams();
   const { manga, setManga } = useManga();
   const [statistic, setStatistic] = useState<MangaStatistic>();
-  const { chapters } = useChapterList(id ?? '');
+  const { chapters, total, limit } = useChapterList(id ?? '', page);
   const { follow, addFollow, removeFollow } = useFollow();
-  console.log("re-render")
+  const [isDescending, setIsDescending] = useState(true);
 
   useEffect(() => {
     setTitleColor("#ffffff")
@@ -46,6 +49,13 @@ export default function Book() {
   const artist = manga?.artist?.attributes?.name || ''
   const author = manga?.author?.attributes?.name || ''
   const formatter = Intl.NumberFormat('en', { notation: 'compact' });
+
+  const handlePageClick = (event: { selected: number; }) => {
+    setSearchParams(prev => {
+      prev.set("page", (event.selected + 1).toString())
+      return prev
+    })
+  };
 
   return (
     <div className='relative sm:pt-8 pt-2 '>
@@ -92,7 +102,7 @@ export default function Book() {
         <div className='sm:pl-[17rem] px-8 pt-2'>
           <div className='mt-4 flex gap-2 '>
             {manga != null ? (Object.keys(follow).includes(manga.id) ?
-              <button className='bg-primary text-white md:px-10 px-3 py-3 rounded-md flex items-center gap-2 shadow-primaryButton' onClick={() => removeFollow(manga.id)}><Icon icon="mdi:book-check-outline" width={20} color='#ffffff'/><span className='hidden md:inline'>Xóa khỏi thư viện</span></button>
+              <button className='bg-primary text-white md:px-10 px-3 py-3 rounded-md flex items-center gap-2 shadow-primaryButton' onClick={() => removeFollow(manga.id)}><Icon icon="mdi:book-check-outline" width={20} color='#ffffff' /><span className='hidden md:inline'>Xóa khỏi thư viện</span></button>
               : <button className='bg-primary text-white md:px-10 px-3 py-3 rounded-md flex items-center gap-2 shadow-primaryButton' onClick={() => addFollow(manga.id, { mangaTitle: getMangaTitle(manga), cover: getCoverArt(manga) })}><Icon icon="mdi:book-outline" width={20} color='#ffffff' /><span className='hidden md:inline'>Thêm vào thư viện</span></button>)
               : <div>Loading</div>
             }
@@ -102,7 +112,7 @@ export default function Book() {
 
           {/* book's tags */}
           <div className='mt-4 flex gap-2 items-center flex-wrap'>
-            {manga?.attributes.contentRating === "suggestive" && <Tag contentRating={manga?.attributes.contentRating} />}
+            {/* {manga?.attributes.contentRating === "suggestive" && <Tag contentRating={manga?.attributes.contentRating} />} */}
             {manga?.attributes.tags.map((obj, index) => <Tag key={index} data={obj} />)}
             <span className='text-xs font-bold px-1 uppercase flex items-center'><Icon icon="icon-park-outline:dot" width={20} className='inline' color='#04d000' style={{ color: `${manga?.attributes.status ? '#04d000' : '#ff4040'}` }} />{`Xuất bản: ${manga?.attributes.year || ''}, ${manga?.attributes.status || ''}`}</span>
           </div>
@@ -190,12 +200,30 @@ export default function Book() {
 
           <div className='grow'>
             <div className='flex justify-between'>
-              <button className='bg-slate-200 py-1 px-3 rounded-md'>Giảm dần</button>
-              <button className='bg-slate-200 py-1 px-3 rounded-md'>Collapse</button>
+              {isDescending ? <button className='bg-slate-200 py-1 px-3 rounded-md' onClick={() => setIsDescending(prev => !prev)}>Tăng dần</button>
+                : <button className='bg-slate-200 py-1 px-3 rounded-md' onClick={() => setIsDescending(prev => !prev)}>Giảm dần</button>}
             </div>
             <div>
-              {chapters && Object.entries(chapters).reverse().map(([volume, chapterList], index) => <Chapter key={index} volume={volume} chapterList={chapterList} />)}
+              {chapters && isDescending ? Object.entries(chapters).reverse().map(([volume, chapterList], index) => <Chapter key={index} volume={volume} chapterList={chapterList} />)
+                : Object.entries(chapters).map(([volume, chapterList], index) => <Chapter key={index} volume={volume} chapterList={chapterList.reverse()} />)}
             </div>
+            {total && limit && <ReactPaginate
+              breakLabel="..."
+              nextLabel=">"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={5}
+              pageCount={Math.floor(total / limit)}
+              previousLabel="<"
+              renderOnZeroPageCount={null}
+              marginPagesDisplayed={2}
+              className="flex gap-2 items-center justify-center m-5"
+              pageClassName="block px-3 py-1 rounded-md hover:bg-gray-200"
+              activeClassName="text-white bg-primary hover:bg-primary"
+              previousClassName="block px-3 py-1 rounded-md hover:bg-gray-200"
+              nextClassName="block px-3 py-1 rounded-md hover:bg-gray-200"
+              breakClassName="text-center"
+              forcePage={page - 1}
+            />}
           </div>
         </div>
       </div>

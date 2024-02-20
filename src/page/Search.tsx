@@ -128,17 +128,25 @@ export default function Search() {
     })
   };
 
+  const onFormSubmit = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    handleSearch();
+  }
+
+
   return (
     <div className="w-full px-5 min-h-screen">
-      <div className="flex items-center gap-3 mb-5 cursor-pointer" onClick={() => navigate(-1)}> <Icon icon="ph:arrow-left-bold" width={24} /><h2 className="text-xl">Tìm kiếm nâng cao</h2></div>
+      <button className="flex items-center gap-3 mb-5 cursor-pointer" onClick={() => navigate(-1)}> <Icon icon="ph:arrow-left-bold" width={24} /><h2 className="text-xl">Tìm kiếm nâng cao</h2></button>
       <div className="flex w-full mb-5">
         <div className='relative mr-4 bg-[#F6F6F6] rounded-lg p-2 md:p-0 ml-auto grow'>
           <Icon icon="radix-icons:magnifying-glass" className="text-[24px] md:absolute inline top-1/2 md:-translate-y-1/2 left-4" />
-          <input className="bg-[#F6F6F6] w-full p-3 pl-12 text-md text-gray-900 rounded-lg hidden md:block outline-primary"
-            type="search"
-            placeholder="Tìm kiếm truyện, tác giả..."
-            value={searchValue}
-            onChange={handleChange} />
+          <form onSubmit={onFormSubmit}>
+            <input className="bg-[#F6F6F6] w-full p-3 pl-12 text-md text-gray-900 rounded-lg hidden md:block outline-primary"
+              type="search"
+              placeholder="Tìm kiếm truyện, tác giả..."
+              value={searchValue}
+              onChange={handleChange} />
+          </form>
         </div>
         <button className="flex items-center w-[150px] h-[48px] bg-primary text-white gap-2 justify-center rounded-md" onClick={() => setShowFilter(prev => !prev)}><Icon icon="ep:arrow-down-bold" className={`transition-all ${showFilter ? 'rotate-180' : ''}`} /><span>Hiện filter</span></button>
       </div>
@@ -160,7 +168,7 @@ export default function Search() {
         <button className="flex items-center w-[100px] h-[40px] bg-primary text-white gap-2 justify-center rounded-md" onClick={handleSearch}>Tìm kiếm</button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 mt-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 mt-5">
         {mangaListLoading ? <div>Loading</div> : mangaList.map((manga: ExtendManga, idx) => <Card manga={manga} key={idx} />)}
       </div>
 

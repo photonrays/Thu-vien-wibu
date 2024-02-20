@@ -1,24 +1,24 @@
 import { ExtendChapter } from "@/api/extend";
 import { getMangaFeed } from "@/api/manga";
+import extendRelationship from "@/utils/extendRelationship";
 import useSWR from "swr";
 
-export default function useChapterList(mangaId: string | null | undefined) {
+export default function useChapterList(mangaId: string | null | undefined, page: number) {
   console.log("fetching chapter list...");
   let chapters: Record<string, ExtendChapter[]> = {};
   const ids: string[] = [];
   const { data, isLoading } = useSWR(
-    mangaId ? [`mangaFeed`, mangaId] : null,
-    () => getMangaFeed(mangaId!)
+    mangaId ? [`mangaFeed`, mangaId, page] : null,
+    () => getMangaFeed(mangaId!, page)
   );
   if (data) {
-    console.log(data);
     const sortedChapters: Record<string, ExtendChapter[]> = {};
-    for (const chapter of data) {
+    for (const chapter of data.data) {
       const volume = chapter.attributes.volume || -1;
       if (!sortedChapters[volume]) {
         sortedChapters[volume] = [];
       }
-      sortedChapters[volume].push(chapter);
+      sortedChapters[volume].push(extendRelationship(chapter) as ExtendChapter);
     }
     chapters = sortedChapters;
 
@@ -33,5 +33,5 @@ export default function useChapterList(mangaId: string | null | undefined) {
     }
   }
 
-  return { chapters, chaptersLoading: isLoading, chapterIdList: ids };
+  return { chapters, total: data?.total, offset: data?.limit, limit: data?.limit, chaptersLoading: isLoading, chapterIdList: ids };
 }
