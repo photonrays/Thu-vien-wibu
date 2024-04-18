@@ -1,5 +1,5 @@
 import { getChapterById } from "@/api/chapter"
-import useSWR from 'swr'
+import useSWR from 'swr/immutable'
 
 
 export default function useChapter(id: string | null | undefined) {

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AuthenticationToken } from './authentication';
 import { Links } from './static';
 
 /**
@@ -240,10 +239,6 @@ export type Login = RequireAtLeastOne<{
     password: string
 }, 'username' | 'email'>;
 
-export type LoginResponse = {
-    result: 'ok' | 'error'
-    token: AuthenticationToken
-};
 
 export type CheckResponse = {
     /** Default: "ok" */
@@ -262,12 +257,6 @@ export type RefreshToken = {
      * Minimum length: 1
      * ``` */
     token: string
-};
-
-export type RefreshResponse = {
-    result: 'ok' | 'error'
-    token?: AuthenticationToken
-    message?: string
 };
 
 export type AccountActivateResponse = {

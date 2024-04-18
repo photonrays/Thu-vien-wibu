@@ -7,7 +7,7 @@ import Card from "@/components/Card";
 import { ExtendManga } from "@/api/extend";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import convertSearchParams from "@/utils/convertSearchParams";
-import useSearch from "@/hooks/useSearch";
+import useSearch from "@/hooks/useSearchManga";
 import buildQueryString from "@/utils/buildQueryString";
 import ReactPaginate from "react-paginate";
 import { Order } from "@/api/static";

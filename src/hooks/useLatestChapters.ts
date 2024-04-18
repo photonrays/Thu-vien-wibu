@@ -1,20 +1,34 @@
-import { getChapterList, GetChapterRequestOptions } from "@/api/chapter"
-import { ExtendChapter } from "@/api/extend"
+import { GetChapterRequestOptions, getChapter } from "../api/chapter"
+import useSWR from 'swr/immutable'
+import { Includes, Order } from "../api/static";
+import useLatestUpdateMangas from "./useLatestUpdateMangas";
 import { MangaContentRating } from "@/api/manga";
-import { Includes, Order } from "@/api/static";
-import useSWR from 'swr'
+import { Chapter, ChapterList } from "@/api/schema";
 
 
 export default function useLatestChapters(page: number) {
-  const requestParams: GetChapterRequestOptions = {
-    limit: 64,
-    offset: (page - 1) * 64,
-    includes: [Includes.SCANLATION_GROUP],
-    order: { readableAt: Order.DESC },
-    contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
-    translatedLanguage: ['vi']
-};
-  const { data, isLoading } = useSWR<ExtendChapter[]>(['lastestChapter', page], () => getChapterList(requestParams))
-  
-  return { chapters: data, chaptersLoading: isLoading }
+    const date = new Date;
+    const requestParams: GetChapterRequestOptions = {
+        limit: 64,
+        offset: (page - 1) * 64,
+        includes: [Includes.SCANLATION_GROUP, Includes.USER],
+        order: { readableAt: Order.DESC },
+        contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
+        translatedLanguage: ['en']
+    };
+    const { data, isLoading, mutate } = useSWR(['lastestChapter', page, date.getMinutes()], () => getChapter(requestParams))
+    const successData = data && data.data.result === "ok" && (data.data)
+    const latestChapters: { [key: string]: Chapter[] } = {};
+
+    if (successData && !isLoading) {
+        for (const chapter of (successData as ChapterList).data) {
+            const mangaId = chapter.relationships?.filter(rela => rela.type == "manga")[0].id
+            if (!latestChapters[mangaId]) {
+                latestChapters[mangaId] = []
+            }
+            latestChapters[mangaId].push(chapter)
+        }
+    }
+
+    return useLatestUpdateMangas({ latestChapter: latestChapters, chapterLoading: isLoading, page, mutate })
 }

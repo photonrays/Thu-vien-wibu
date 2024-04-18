@@ -6,12 +6,12 @@ import { Tag } from "../api/schema";
 import { TagItem } from "@/components/TagItem";
 import PopularCard from "@/components/PopularCard";
 import usePopularNewTitles from "@/hooks/usePopularNewTitles";
-import { useManga } from "@/context/useManga";
 import { HistoryCard } from "@/components/HistoryCard";
 import useReadingHistory from "@/hooks/useReadingHistory";
 import useMangaRanking from "@/hooks/useMangaRanking";
 import RankingCard from "@/components/RankingCard";
 import { Icon } from "@iconify/react";
+import useLatestChapters from "@/hooks/useLatestChapters";
 
 export default function Home() {
   const settings: Settings = {
@@ -34,19 +34,19 @@ export default function Home() {
     sliderRef.current?.slickPrev();
   };
 
-  const [tag, setTag] = useState<Tag[]>();
+  const [tag, setTag] = useState<Tag[]>([]);
 
-  const { populars, popularLoading } = usePopularNewTitles();
+  const { data: populars, isLoading: popularsLoading } = usePopularNewTitles();
   const { history, removeHistory } = useReadingHistory();
-  const { latestUpdates } = useManga();
-  const { ranking, rankingLoading } = useMangaRanking(1);
+  const { latestUpdates, latestUpdatesLoading } = useLatestChapters(1)
+  const { data: ranking, isLoading: rankingLoading } = useMangaRanking(1);
 
   console.log("re-render");
 
   useEffect(() => {
-    MangaApi.getTag()
+    MangaApi.getMangaTag()
       .then((data) => {
-        setTag(data.data.slice(0, 14));
+        setTag(data?.data?.data.slice(0, 14));
       })
       .catch((err) => {
         console.log(err);
@@ -58,12 +58,12 @@ export default function Home() {
       {/*Top manga*/}
       <section className="mb-8 w-full">
         <h2 className="text-2xl font-bold mb-4">Truyện đề cử</h2>
-        {popularLoading ? (
+        {popularsLoading ? (
           <PopularCard />
         ) : (
           <div className="w-full relative">
             <Slider ref={sliderRef} {...settings}>
-              {populars?.map((obj, index) => {
+              {populars && populars?.data?.map((obj, index) => {
                 return <PopularCard key={index} data={obj} />;
               })}
             </Slider>
@@ -124,17 +124,11 @@ export default function Home() {
           <div className="flex justify-between">
             <h2 className="text-2xl font-bold">Truyện Top</h2>
           </div>
-          {/* <div className="flex my-2">
-            <div className="flex-1 w-full bg-red-400 text-center text-white py-1 rounded-md">Top Tuần</div>
-            <div className="flex-1 w-full text-center rounded-md">Top Tháng</div>
-            <div className="flex-1 w-full text-center rounded-md">Toàn thời gian</div>
-          </div> */}
           <div className=" w-full mt-5">
             {rankingLoading ? (
               <div>Loading</div>
             ) : (
-              ranking
-                ?.slice(0, 5)
+              ranking && ranking?.data.slice(0, 5)
                 .map((data, index) => (
                   <RankingCard data={data} rank={index} key={index} />
                 ))
@@ -152,7 +146,7 @@ export default function Home() {
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          {Object.entries(latestUpdates).length < 1 ? (
+          {!latestUpdatesLoading || Object.entries(latestUpdates).length < 1 ? (
             <div>Loading</div>
           ) : (
             Object.entries(latestUpdates)

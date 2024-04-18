@@ -1,17 +1,10 @@
 /********************
  * IMPORT STATEMENTS
  ********************/
-import { axiosInstance } from "./axiosInstance"
-import { MangaList, ChapterList, MangaResponse, TagResponse, MangaStatistic, GetMangasStatisticResponse } from './schema';
-import extendRelationship from "@/utils/extendRelationship";
-import { ExtendManga } from "./extend";
+
+import { MangaList, ChapterList, MangaResponse, TagResponse, ErrorResponse } from './schema';
 import { Order, Includes } from './static';
-// import * as util from './util';
-
-/*******************
- * CONSTANT DEFINITIONS
- *******************/
-
+import * as util from './util';
 
 /*******************
  * ENUM DEFINITIONS
@@ -296,125 +289,102 @@ export type GetMangaTagResponse = TagResponse;
  * FUNCTION DEFINITIONS
  ***********************/
 
-export const getMangaList = async (requestParams: GetSearchMangaRequestOptions): Promise<GetSearchMangaResponse> => {
-  if (!requestParams.includes) {
-    requestParams.includes = [Includes.COVER_ART]
+/**
+ * Search for manga.
+ * 
+ * @param {GetSearchMangaRequestOptions} [options] See {@link GetSearchMangaRequestOptions}
+ * @returns A promise that resolves to a {@link GetSearchMangaResponse} object.
+ * Will resolve to a {@link ErrorResponse} object on error.
+ */
+export const getSearchManga = function (options?: GetSearchMangaRequestOptions) {
+  const qs = util.buildQueryStringFromOptions(options);
+  const path = `/manga${qs}`;
+
+  return util.createHttpsRequestPromise<GetSearchMangaResponse>('GET', path);
+};
+
+
+/**
+ * Gets the feed of chapters for the given manga.
+ * 
+ * @param {string} id UUID formatted string.
+ * @param {GetMangaIdFeedRequestOptions} [options] See {@link GetMangaIdFeedRequestOptions}
+ * @returns A promise that resolves to a {@link GetMangaIdFeedResponse} object.
+ * Will resolve to a {@link ErrorResponse} object on error.
+ */
+export const getMangaIdFeed = function (id: string, options?: GetMangaIdFeedRequestOptions) {
+  if (id === undefined) {
+    return Promise.reject('ERROR - getMangaIdFeed: Parameter `id` cannot be undefined');
+  } else if (id === '') {
+    return Promise.reject('ERROR - getMangaIdFeed: Parameter `id` cannot be blank');
   }
 
-  const { data } = await axiosInstance.get<GetSearchMangaResponse>("manga", {
-    params: requestParams,
-  })
+  const qs = util.buildQueryStringFromOptions(options);
+  const path = `/manga/${id}/feed${qs}`;
 
-  console.log(data);
-  return data;
-}
+  return util.createHttpsRequestPromise<GetMangaIdFeedResponse>('GET', path);
+};
 
-export const getExtendedMangaList = async (requestParams: GetSearchMangaRequestOptions): Promise<ExtendManga[]> => {
-  if (!requestParams.includes) {
-    requestParams.includes = [Includes.COVER_ART]
+/**
+ * Get aggregate manga volume and chapter data.
+ * 
+ * @param {string} id UUID formatted string.
+ * @param {GetMangaIdAggregateRequestOptions} [options] See {@link GetMangaIdAggregateRequestOptions}
+ * @returns A promise that resolves to a {@link GetMangaIdAggregateResponse} object.
+ * Will resolve to a {@link ErrorResponse} object on error.
+ */
+export const getMangaIdAggregate = function (id: string, options?: GetMangaIdAggregateRequestOptions) {
+  if (id === undefined) {
+    return Promise.reject('ERROR - getMangaIdAggregate: Parameter `id` cannot be undefined');
+  } else if (id === '') {
+    return Promise.reject('ERROR - getMangaIdAggregate: Parameter `id` cannot be blank');
   }
-  let mangas: ExtendManga[] = []
 
-  const { data } = await axiosInstance.get<GetSearchMangaResponse>("manga", {
-    params: requestParams,
-  })
+  const qs = util.buildQueryStringFromOptions(options);
+  const path = `/manga/${id}/aggregate${qs}`;
 
-  mangas = data.data.map(mg => extendRelationship(mg) as ExtendManga)
+  return util.createHttpsRequestPromise<GetMangaIdAggregateResponse>('GET', path);
+};
 
-  return mangas;
-}
-
-export const getMostFollowedCount = async (page: number): Promise<ExtendManga[]> => {
-  const requestParams: GetSearchMangaRequestOptions = {
-    includes: [Includes.COVER_ART],
-    order: { followedCount: Order.DESC },
-    hasAvailableChapters: "true",
-    limit: 15,
-    offset: (page - 1) * 15,
-    availableTranslatedLanguage: ['vi']
-  };
-
-  let mangas: ExtendManga[] = []
-
-  const { data } = await axiosInstance.get<GetSearchMangaResponse>("manga", {
-    params: requestParams,
-  })
-
-  mangas = data.data.map(mg => extendRelationship(mg) as ExtendManga)
-
-
-  return mangas;
-}
-
-
-export const getMangasByIds = async (mangaIds: string[]): Promise<Record<string, ExtendManga>> => {
-  const requestParams: GetSearchMangaRequestOptions = {
-    includes: [Includes.COVER_ART],
-    ids: mangaIds,
-    contentRating: [MangaContentRating.EROTICA, MangaContentRating.PORNOGRAPHIC, MangaContentRating.SAFE, MangaContentRating.SUGGESTIVE],
-    hasAvailableChapters: "true",
-    availableTranslatedLanguage: ['vi'],
-    limit: 64
-  };
-
-  const { data } = await axiosInstance.get<GetSearchMangaResponse>("manga", {
-    params: requestParams,
-  });
-
-  let mangas: ExtendManga[] = []
-  const updates: Record<string, ExtendManga> = {}
-
-  mangas = data.data.map(mg => extendRelationship(mg) as ExtendManga)
-  for (const manga of mangas) {
-    if (!updates[manga.id]) {
-      updates[manga.id] = manga
-    }
+/**
+ * Get manga information by ID.
+ * 
+ * @param {string} id UUID formatted string.
+ * @param {GetMangaIdRequestOptions} [options] See {@link GetMangaIdRequestOptions}
+ * @returns A promise that resolves to a {@link GetMangaIdResponse} object.
+ * Will resolve to a {@link ErrorResponse} object on error.
+ */
+export const getMangaId = function (id: string, options?: GetMangaIdRequestOptions) {
+  if (id === undefined) {
+    return Promise.reject('ERROR - getMangaId: Parameter `id` cannot be undefined');
+  } else if (id === '') {
+    return Promise.reject('ERROR - getMangaId: Parameter `id` cannot be blank');
   }
-  return updates;
-}
 
-export const getTag = async (): Promise<GetMangaTagResponse> => {
-  const { data } = await axiosInstance.get<GetMangaTagResponse>("manga/tag")
+  const qs = util.buildQueryStringFromOptions(options);
+  const path = `/manga/${id}${qs}`;
 
-  return data
-}
+  return util.createHttpsRequestPromise<GetMangaIdResponse>('GET', path);
+};
 
+/**
+ * Get a random manga.
+ * 
+ * @param {GetMangaRandomRequestOptions} [options] See {@link GetMangaRandomRequestOptions}
+ * @returns A promise that resolves to a {@link GetMangaRandomResponse} object
+ */
+export const getMangaRandom = function (options?: GetMangaRandomRequestOptions) {
+  const qs = util.buildQueryStringFromOptions(options);
+  const path = `/manga/random${qs}`;
+  return util.createHttpsRequestPromise<GetMangaRandomResponse>('GET', path);
+};
 
-export const getMangaById = async (mangaId: string): Promise<ExtendManga> => {
-  const requestParams: GetMangaIdRequestOptions = {
-    includes: [Includes.ARTIST, Includes.AUTHOR, Includes.MANGA, Includes.COVER_ART, Includes.CREATOR, Includes.TAG],
-  };
-
-  const { data } = await axiosInstance.get<GetMangaIdResponse>(`manga/${mangaId}`, {
-    params: requestParams,
-  });
-
-  return extendRelationship(data.data) as ExtendManga
-}
-
-export const getMangaStatistic = async (mangaId: string): Promise<MangaStatistic> => {
-  const { data } = await axiosInstance.get<GetMangasStatisticResponse>(`statistics/manga/${mangaId}`)
-
-  return data.statistics[mangaId]
-}
-
-export const getMangaFeed = async (mangaId: string, page: number, limit: number): Promise<ChapterList> => {
-  const requestParams: GetMangaIdFeedRequestOptions = {
-    limit,
-    offset: (page - 1) * limit,
-    includes: [Includes.SCANLATION_GROUP, Includes.USER],
-    order: { volume: Order.DESC, chapter: Order.DESC },
-    contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
-    translatedLanguage: ['vi']
-  };
-
-  // let chapters: ExtendChapter[] = []
-
-  const { data } = await axiosInstance.get<GetMangaIdFeedResponse>(`manga/${mangaId}/feed`, {
-    params: requestParams,
-  });
-
-  // chapters = data.data.map(ch => extendRelationship(ch) as ExtendChapter)
-
-  return data
-}
+/**
+ * Get manga tag list. This function takes no parameters.
+ * 
+ * @returns A promise that resolves to a {@link GetMangaTagResponse} object
+ */
+export const getMangaTag = function () {
+  const path = `/manga/tag`;
+  return util.createHttpsRequestPromise<GetMangaTagResponse>('GET', path);
+};

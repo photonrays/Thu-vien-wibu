@@ -2,14 +2,10 @@
  * IMPORT STATEMENTS
  ********************/
 
-import { MangaContentRating } from './manga';
+import type { MangaContentRating } from './manga';
 import type { ChapterList, ChapterResponse, ReferenceExpansionChapter, ChapterEdit, Response } from './schema';
-import { Includes, Order } from './static';
-import extendRelationship from "@/utils/extendRelationship";
-import { axiosInstance } from "./axiosInstance";
-import { ExtendChapter } from "./extend";
-
-
+import type { Order } from './static';
+import * as util from './util';
 
 /*******************
  * TYPE DEFINITIONS
@@ -101,30 +97,37 @@ export type DeleteChapterIdResponse = Response;
  * FUNCTION DEFINITIONS
  ***********************/
 
-export const getChapterList = async (requestParams: GetChapterRequestOptions): Promise<ExtendChapter[]> => {
-    let chapters: ExtendChapter[] = [];
+/**
+ * Gets a list of chapters based on search options.
+ * 
+ * @param {GetChapterRequestOptions} [options] See {@link GetChapterRequestOptions}
+ * @returns A promise that resolves to a {@link GetChapterResponse} object.
+ * Can also reject to an {@link ErrorResponse} object.
+ */
+export const getChapter = function (options?: GetChapterRequestOptions) {
+    const qs = util.buildQueryStringFromOptions(options);
+    const path = `/chapter${qs}`;
 
-    const { data } = await axiosInstance.get<GetChapterResponse>("chapter", {
-        params: requestParams,
-    })
+    return util.createHttpsRequestPromise<GetChapterResponse>('GET', path);
+};
 
-    if (data) {
-        chapters = data.data.map(c => extendRelationship(c) as ExtendChapter)
+/**
+ * Gets information about a specific manga chapter.
+ * 
+ * @param {string} id UUID formatted string
+ * @param {GetChapterIdRequestOptions} [options] See {@link GetChapterIdRequestOptions}
+ * @returns A promise that resolves to a {@link GetChapterIdResponse} object.
+ * Can also reject to an {@link ErrorResponse} object.
+ */
+export const getChapterId = function (id: string, options?: GetChapterIdRequestOptions) {
+    if (id === undefined) {
+        return Promise.reject('ERROR - getChapterId: Parameter `id` cannot be undefined');
+    } else if (id === '') {
+        return Promise.reject('ERROR - getChapterId: Parameter `id` cannot be blank');
     }
 
-    return chapters
-}
+    const qs = util.buildQueryStringFromOptions(options);
+    const path = `/chapter/${id}${qs}`;
 
-export const getChapterById = async(chapterId: string): Promise<ExtendChapter | null> => {
-    const requestParams: GetChapterIdRequestOptions = {
-        includes: [Includes.MANGA, Includes.SCANLATION_GROUP, Includes.USER],
-    };
-
-    const {data} = await axiosInstance.get<GetChapterIdResponse>(`chapter/${chapterId}`, {
-        params: requestParams
-    })
-    if (data) {
-        return extendRelationship(data.data) as ExtendChapter
-    }
-    return null
-}
+    return util.createHttpsRequestPromise<GetChapterIdResponse>('GET', path);
+};

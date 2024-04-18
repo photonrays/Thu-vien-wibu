@@ -1,5 +1,5 @@
 import { getAtHomeServerChapterId } from "@/api/atHome"
-import useSWR from 'swr'
+import useSWR from 'swr/immutable'
 
 
 export default function useChapterPages(id: string | null | undefined) {

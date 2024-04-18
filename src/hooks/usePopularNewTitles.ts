@@ -1,19 +1,20 @@
-import { getExtendedMangaList, GetSearchMangaRequestOptions, MangaContentRating } from "@/api/manga"
-import { Includes, Order } from "@/api/static";
-import { getPreviousMonthDateTimeUTC } from "@/api/utils";
-import useSWR from 'swr'
+import { GetSearchMangaRequestOptions, MangaContentRating } from "@/api/manga"
+import { Includes, Order } from "../api/static"
+import useSearchManga from "./useSearchManga"
 
+export default function useFeaturedTitles() {
+  const createdAtSince = new Date(Date.now() - 30 * 24 * 3600 * 1000)
 
-export default function usePopularNewTitles() {
-    const requestParams: GetSearchMangaRequestOptions = {
-        includes: [Includes.COVER_ART, Includes.AUTHOR, Includes.ARTIST],
-        order: { followedCount: Order.DESC },
-        contentRating: [MangaContentRating.SAFE, MangaContentRating.SUGGESTIVE],
-        hasAvailableChapters: "true",
-        createdAtSince: getPreviousMonthDateTimeUTC(),
-        availableTranslatedLanguage: ["vi"]
-      };
-    const {data, isLoading} = useSWR('popularNewTitle', () => getExtendedMangaList(requestParams)) 
+  const requestParams: GetSearchMangaRequestOptions = {
+    includes: [Includes.COVER_ART, Includes.ARTIST, Includes.AUTHOR],
+    order: {
+      followedCount: Order.DESC,
+    },
+    contentRating: [MangaContentRating.SAFE, MangaContentRating.SUGGESTIVE],
+    hasAvailableChapters: "true",
+    availableTranslatedLanguage: ['en'],
+    createdAtSince: createdAtSince.toISOString().slice(0, -13) + "00:00:00"
+  }
 
-    return {populars: data, popularLoading: isLoading}
+  return useSearchManga(requestParams)
 }

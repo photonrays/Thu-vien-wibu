@@ -1,12 +1,13 @@
-import { axiosInstance } from './axiosInstance';
-import { GetMangasStatisticResponse, MangaStatistic } from './schema';
+import { GetMangasStatisticResponse } from './schema';
+import * as util from './util';
 
 export type GetMangasStatisticRequestOptions = {
     manga: string[]
 }
 
-export const getMangaStatistic = async (mangaId: string): Promise<MangaStatistic> => {
-    const { data } = await axiosInstance.get<GetMangasStatisticResponse>(`statistics/manga/${mangaId}`)
+export const getMangasStatistic = function (options?: GetMangasStatisticRequestOptions) {
+    const qs = util.buildQueryStringFromOptions(options);
+    const path = `/statistics/manga${qs}`;
 
-    return data.statistics[mangaId]
-}
+    return util.createHttpsRequestPromise<GetMangasStatisticResponse>('GET', path);
+};
