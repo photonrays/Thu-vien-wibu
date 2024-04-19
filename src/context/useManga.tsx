@@ -1,4 +1,4 @@
-import { MangaContentRating, getMangaId, getMangaIdFeed } from "../api/manga";
+import { GetMangaIdFeedResponse, MangaContentRating, getMangaId, getMangaIdFeed } from "../api/manga";
 import { createContext, useContext, useState, useEffect } from "react";
 import { Includes, Order } from "../api/static";
 import { getChapterId } from "../api/chapter";
@@ -8,7 +8,7 @@ import { Chapter, Manga } from "@/api/schema";
 type MangaContextProps = {
     manga: Manga | null;
     updateManga: (id: string) => Promise<void>;
-    mangaFeed: Chapter[] | null;
+    mangaFeed: GetMangaIdFeedResponse | null;
     updateMangaByChapterId: (cid: string) => Promise<void>;
     clearManga: () => void;
 }
@@ -23,7 +23,7 @@ export const MangaContext = createContext<MangaContextProps>({
 
 export function MangaProvider({ children }: { children: React.ReactNode }) {
     const [manga, setManga] = useState<Manga | null>(null)
-    const [mangaFeed, setMangaFeed] = useState<Chapter[]>([])
+    const [mangaFeed, setMangaFeed] = useState<GetMangaIdFeedResponse | null>(null)
 
     const updateManga = async (id: string) => {
         if (id) {
@@ -50,11 +50,11 @@ export function MangaProvider({ children }: { children: React.ReactNode }) {
                 includes: [Includes.SCANLATION_GROUP, Includes.USER],
                 order: { volume: Order.DESC, chapter: Order.DESC },
                 contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
-                translatedLanguage: ['en']
+                translatedLanguage: ['vi']
             };
             const { data } = await getMangaIdFeed(id, requestParams)
             if (data) {
-                setMangaFeed(data.data)
+                setMangaFeed(data)
             }
         }
         if (manga) {
@@ -64,7 +64,7 @@ export function MangaProvider({ children }: { children: React.ReactNode }) {
 
     const clearManga = () => {
         setManga(null)
-        setMangaFeed([])
+        setMangaFeed(null)
     }
 
     return (

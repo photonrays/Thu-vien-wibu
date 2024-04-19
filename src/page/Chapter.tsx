@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { getMangaById } from "@/api/manga";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import { useHeader } from "@/context/useHeader";
 import { useManga } from "@/context/useManga";
@@ -31,16 +30,16 @@ export default function Chapter() {
   const [isDD1Open, setDD1IsOpen] = useState(false);
   const [isDD2Open, setDD2IsOpen] = useState(false);
   // const [settings, setSettings] = useState()
-  const { manga, setManga } = useManga();
+  const { manga, updateManga } = useManga();
   const { addHistory } = useReadingHistory();
   const { chapter, chapterLoading } = useChapter(id);
-  const { chapters, chapterIdList } = useChapterList(chapter?.manga?.id, 1, 100);
-  const { chapterPages, pageList, chapterPagesLoading } = useChapterPages(id);
+  const { chapters, chapterIdList } = useChapterList(chapter?.relationships.find(rela => rela.type == 'manga')?.id, 1, 100);
+  const { pages, pageList, chapterPagesLoading } = useChapterPages(id);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (manga != null && manga?.id == chapter?.manga?.id) {
+    if (manga != null && manga?.id == chapter?.relationships.find(rela => rela.type == 'manga')?.id) {
       addHistory(manga.id, {
         mangaTitle: getMangaTitle(manga),
         cover: getCoverArt(manga),
@@ -48,9 +47,8 @@ export default function Chapter() {
         chapterId: chapter.id,
       });
       setChapterIndex(chapterIdList.indexOf(chapter.id));
-    } else if (chapter?.manga) {
-      getMangaById(chapter.manga?.id)
-        .then((data) => setManga(data))
+    } else if (chapter?.relationships.find(rela => rela.type == 'manga')) {
+      updateManga(chapter?.relationships.find(rela => rela.type == 'manga')?.id as string)
         .catch((e) => console.log(e));
       setChapterIndex(chapterIdList.indexOf(chapter.id));
     }
@@ -68,8 +66,6 @@ export default function Chapter() {
       navigate(`/chuong/${chapterIdList[chapterIndex]}`);
   }, [chapterIndex]);
 
-  console.log("re-render");
-
   return (
     <div className="relative transition-all">
       <div className="mx-4">
@@ -80,7 +76,7 @@ export default function Chapter() {
             <p className="text-xl">{getChapterTitle(chapter!)}</p>
           )}
           <Link
-            to={`/truyen-tranh/${chapter?.manga?.id || ""}`}
+            to={`/truyen-tranh/${chapter?.relationships.find(rela => rela.type == 'manga')?.id || ""}`}
             className="text-lg text-primary"
           >
             {getMangaTitleByChapter(chapter)}
@@ -104,8 +100,8 @@ export default function Chapter() {
         {chapterPagesLoading ? (
           <div>Loading</div>
         ) : (
-          chapterPages.length > 0 &&
-          chapterPages.map((obj, index) => (
+          pages.length > 0 &&
+          pages.map((obj, index) => (
             <img
               key={index}
               src={obj}
@@ -129,7 +125,7 @@ export default function Chapter() {
         <div className="flex items-center gap-4 my-2">
           <Icon icon="octicon:book-16" className="text-2xl shrink-0" />
           <Link
-            to={`/truyen-tranh/${chapter?.manga?.id || ""}`}
+            to={`/truyen-tranh/${chapter?.relationships.find(rela => rela.type == 'manga')?.id || ""}`}
             className="text-lg text-primary"
           >
             {getMangaTitleByChapter(chapter)}

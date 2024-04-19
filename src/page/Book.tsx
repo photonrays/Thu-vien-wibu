@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable react-hooks/exhaustive-deps */
 import Chapter from '@/components/Chapter'
 import { useEffect, useState } from 'react'
 import { useHeader } from '@/context/useHeader'
 import Tag from '@/components/Tag'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { getMangaById } from '@/api/manga'
-import { getMangaStatistic } from '@/api/statistic'
+import { getMangasStatistic } from '@/api/statistic'
 import getCoverArt from '@/utils/getCoverArt'
 import { getAltMangaTitle, getMangaTitle } from '@/utils/getTitles'
 import { MangaStatistic } from '@/api/schema'
@@ -16,14 +16,18 @@ import useFollow from '@/hooks/useFollow'
 import { Icon } from '@iconify/react'
 import ReactPaginate from 'react-paginate'
 
+const LIMIT = 24
+
 export default function Book() {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page") ? parseInt(searchParams.get("page")!) : 1
   const { isSidebarOpen, setTitleColor } = useHeader();
   const { id } = useParams();
-  const { manga, setManga } = useManga();
+  const { manga, updateManga } = useManga();
   const [statistic, setStatistic] = useState<MangaStatistic>();
-  const { chapters, total, limit } = useChapterList(id ?? '', page, 24);
+  const [artist, setArtist] = useState('')
+  const [author, setAuthor] = useState('')
+  const { chapters, total } = useChapterList(id ?? '', page, LIMIT);
   const { follow, addFollow, removeFollow } = useFollow();
   const [isDescending, setIsDescending] = useState(true);
 
@@ -35,20 +39,22 @@ export default function Book() {
 
   useEffect(() => {
     if (id) {
-      getMangaById(id)
-        .then(data => { setManga(data) })
-        .catch(err => console.log(err))
-
-      getMangaStatistic(id)
-        .then(data => { setStatistic(data) })
+      updateManga(id).catch(err => console.log(err))
+      getMangasStatistic({ manga: [id] })
+        .then((data) => setStatistic(data.data.statistics[id]))
         .catch(err => console.log(err))
     }
   }, [id])
 
   const coverArt = getCoverArt(manga)
-  const artist = manga?.artist?.attributes?.name || ''
-  const author = manga?.author?.attributes?.name || ''
   const formatter = Intl.NumberFormat('en', { notation: 'compact' });
+
+  useEffect(() => {
+    if (manga) {
+      setArtist(manga?.relationships?.find(rela => rela.type === 'artist')?.attributes?.name as string)
+      setAuthor(manga?.relationships?.find(rela => rela.type === 'author')?.attributes?.name as string)
+    }
+  }, [manga])
 
   const handlePageClick = (event: { selected: number; }) => {
     setSearchParams(prev => {
@@ -207,12 +213,12 @@ export default function Book() {
               {chapters && isDescending ? Object.entries(chapters).reverse().map(([volume, chapterList], index) => <Chapter key={index} volume={volume} chapterList={chapterList} />)
                 : Object.entries(chapters).map(([volume, chapterList], index) => <Chapter key={index} volume={volume} chapterList={chapterList.reverse()} />)}
             </div>
-            {total && limit && <ReactPaginate
+            {total && <ReactPaginate
               breakLabel="..."
               nextLabel=">"
               onPageChange={handlePageClick}
               pageRangeDisplayed={5}
-              pageCount={Math.floor(total / limit)}
+              pageCount={Math.floor(total / LIMIT)}
               previousLabel="<"
               renderOnZeroPageCount={null}
               marginPagesDisplayed={2}

@@ -1,28 +1,23 @@
-import useSWR, { KeyedMutator } from 'swr/immutable'
+import useSWR from 'swr/immutable'
 import { GetSearchMangaRequestOptions, MangaContentRating, getSearchManga } from '../api/manga';
 import { Includes } from '../api/static';
-import { Chapter, ChapterList, ErrorResponse, Manga, MangaList } from '@/api/schema';
+import { Chapter, Manga } from '@/api/schema';
 
 type Props = {
     latestChapter: {
         [key: string]: Chapter[];
     },
     chapterLoading: boolean,
-    page: number,
-    mutate: KeyedMutator<{
-        data: ErrorResponse | ChapterList;
-        statusCode?: number | undefined;
-        statusMessage?: string | undefined;
-    }>
+    page: number
 }
 
-export default function useLatestUpdateMangas({ latestChapter, chapterLoading, mutate, page }: Props) {
+export default function useLatestUpdateMangas({ latestChapter, chapterLoading, page }: Props) {
     const requestParams: GetSearchMangaRequestOptions = {
         includes: [Includes.COVER_ART],
         ids: Object.keys(latestChapter),
         contentRating: [MangaContentRating.EROTICA, MangaContentRating.PORNOGRAPHIC, MangaContentRating.SAFE, MangaContentRating.SUGGESTIVE],
         hasAvailableChapters: "true",
-        availableTranslatedLanguage: ['en'],
+        availableTranslatedLanguage: ['vi'],
         limit: 64
     };
 
@@ -33,10 +28,10 @@ export default function useLatestUpdateMangas({ latestChapter, chapterLoading, m
 
 
     if (successData && !isLoading) {
-        for (const manga of (successData as MangaList).data) {
+        for (const manga of successData.data) {
             updates[manga.id] = { manga, chapterList: latestChapters[manga.id] }
         }
     }
 
-    return { latestUpdates: updates, latestUpdatesLoading: isLoading, mutateLatestChapter: mutate }
+    return { latestUpdates: updates, latestUpdatesLoading: isLoading }
 }

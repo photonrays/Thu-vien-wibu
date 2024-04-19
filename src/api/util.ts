@@ -122,7 +122,6 @@ export const createHttpsRequestPromise = function <T>(method: string, path: stri
         url: `${CORS}/v1/cors/${encodedUrl}`,
         headers: {
             'x-requested-with': 'cubari',
-            'User-Agent': 'wibulib'
         }
     };
 

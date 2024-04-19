@@ -41,7 +41,8 @@ export default function Home() {
   const { latestUpdates, latestUpdatesLoading } = useLatestChapters(1)
   const { data: ranking, isLoading: rankingLoading } = useMangaRanking(1);
 
-  console.log("re-render");
+  console.log("latestUpdates: ", latestUpdates)
+  console.log("latestUpdatesLoading: ", latestUpdatesLoading)
 
   useEffect(() => {
     MangaApi.getMangaTag()

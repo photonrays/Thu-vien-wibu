@@ -13,7 +13,7 @@ export default {
         'custom': '#3c4858',
       },
       gridTemplateColumns: {
-        'chapter-grid': 'auto 150px 60px',
+        'chapter-grid': 'auto 150px',
       },
       boxShadow: {
         'primaryButton': '0 0 24px -6px #E75C62',

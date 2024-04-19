@@ -1,16 +1,16 @@
 import Select from "@/components/Select";
 import { Icon } from "@iconify/react";
 import { useState, useEffect } from "react"
-import { GetSearchMangaRequestOptions, MangaContentRating, MangaPublicationDemographic, getTag, MangaPublicationStatus, GetSearchMangaOrder } from "@/api/manga";
+import { GetSearchMangaRequestOptions, MangaContentRating, MangaPublicationDemographic, MangaPublicationStatus, GetSearchMangaOrder, getMangaTag } from "@/api/manga";
 import { Tag } from "@/api/schema";
 import Card from "@/components/Card";
 import { ExtendManga } from "@/api/extend";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import convertSearchParams from "@/utils/convertSearchParams";
-import useSearch from "@/hooks/useSearchManga";
 import buildQueryString from "@/utils/buildQueryString";
 import ReactPaginate from "react-paginate";
 import { Order } from "@/api/static";
+import useSearchManga from "@/hooks/useSearchManga";
 type sortOrder = {
   title: string
   value: GetSearchMangaOrder
@@ -37,7 +37,7 @@ export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const options = convertSearchParams(searchParams)
   console.log("option: ", options)
-  const { mangaList, data, mangaListLoading } = useSearch(options)
+  const { data, isLoading } = useSearchManga(options)
   const offset = searchParams.get("offset") ? parseInt(searchParams.get("offset")!) : 0
   const total = data ? data.total : 0
   const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : 24
@@ -53,9 +53,9 @@ export default function Search() {
   const [publicationStatus, setPublicationStatus] = useState<MangaPublicationStatus[]>([])
 
   useEffect(() => {
-    getTag()
+    getMangaTag()
       .then((data) => {
-        data.data.sort(function (a, b) {
+        data.data.data.sort(function (a, b) {
           if (a.attributes.name.en < b.attributes.name.en) {
             return -1;
           }
@@ -64,7 +64,7 @@ export default function Search() {
           }
           return 0;
         });
-        setTagData(data.data)
+        setTagData(data.data.data)
       })
       .catch((err) => {
         console.log(err);
@@ -169,7 +169,7 @@ export default function Search() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 mt-5">
-        {mangaListLoading ? <div>Loading</div> : mangaList.map((manga: ExtendManga, idx) => <Card manga={manga} key={idx} />)}
+        {isLoading || !data ? <div>Loading</div> : data?.data.map((manga, idx) => <Card manga={manga} key={idx} />)}
       </div>
 
       <ReactPaginate

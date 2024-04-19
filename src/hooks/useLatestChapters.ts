@@ -3,7 +3,7 @@ import useSWR from 'swr/immutable'
 import { Includes, Order } from "../api/static";
 import useLatestUpdateMangas from "./useLatestUpdateMangas";
 import { MangaContentRating } from "@/api/manga";
-import { Chapter, ChapterList } from "@/api/schema";
+import { Chapter } from "@/api/schema";
 
 
 export default function useLatestChapters(page: number) {
@@ -14,14 +14,14 @@ export default function useLatestChapters(page: number) {
         includes: [Includes.SCANLATION_GROUP, Includes.USER],
         order: { readableAt: Order.DESC },
         contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
-        translatedLanguage: ['en']
+        translatedLanguage: ['vi']
     };
-    const { data, isLoading, mutate } = useSWR(['lastestChapter', page, date.getMinutes()], () => getChapter(requestParams))
+    const { data, isLoading } = useSWR(['lastestChapter', page, date.getMinutes()], () => getChapter(requestParams))
     const successData = data && data.data.result === "ok" && (data.data)
     const latestChapters: { [key: string]: Chapter[] } = {};
 
     if (successData && !isLoading) {
-        for (const chapter of (successData as ChapterList).data) {
+        for (const chapter of successData.data) {
             const mangaId = chapter.relationships?.filter(rela => rela.type == "manga")[0].id
             if (!latestChapters[mangaId]) {
                 latestChapters[mangaId] = []
@@ -30,5 +30,5 @@ export default function useLatestChapters(page: number) {
         }
     }
 
-    return useLatestUpdateMangas({ latestChapter: latestChapters, chapterLoading: isLoading, page, mutate })
+    return useLatestUpdateMangas({ latestChapter: latestChapters, chapterLoading: isLoading, page })
 }
