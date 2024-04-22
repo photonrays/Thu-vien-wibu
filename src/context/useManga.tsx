@@ -2,7 +2,7 @@ import { GetMangaIdFeedResponse, MangaContentRating, getMangaId, getMangaIdFeed 
 import { createContext, useContext, useState, useEffect } from "react";
 import { Includes, Order } from "../api/static";
 import { getChapterId } from "../api/chapter";
-import { Chapter, Manga } from "@/api/schema";
+import { Manga } from "@/api/schema";
 
 
 type MangaContextProps = {

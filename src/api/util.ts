@@ -125,10 +125,7 @@ export const createHttpsRequestPromise = function <T>(method: string, path: stri
         }
     };
 
-    let body = null;
-
     if (options && ('body' in options)) {
-        body = options.body;
         delete options.body;
     }
 
