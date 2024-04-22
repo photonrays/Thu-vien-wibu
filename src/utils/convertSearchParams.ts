@@ -30,7 +30,7 @@ export default function convertSearchParams(params: URLSearchParams): GetSearchM
         result.status = []
     }
     if (params.get("title")) {
-        result.title = params.get("title")!
+        result.title = encodeURIComponent(params.get("title")!)
     }
 
     // order
@@ -56,6 +56,5 @@ export default function convertSearchParams(params: URLSearchParams): GetSearchM
     if (params.get("order[rating]")) {
         result.order.rating = params.get("order[rating]") as Order
     }
-    console.log({ result })
     return result
 }

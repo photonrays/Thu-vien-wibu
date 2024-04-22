@@ -1,5 +1,6 @@
 import { getAtHomeServerChapterId } from "@/api/atHome"
 import useSWR from 'swr/immutable'
+import Config from "@/config";
 
 
 export default function useChapterPages(id: string | null | undefined) {
@@ -15,7 +16,7 @@ export default function useChapterPages(id: string | null | undefined) {
         forcePort443: false
     }))
     const successData = data && data.data?.chapter
-    const pages = successData ? successData.data.map(originalData => `${data.data.baseUrl}/data/${successData.hash}/${originalData}`) : []
+    const pages = successData ? successData.data.map(originalData => `${Config.CORS}/v1/image/${btoa(`${data.data.baseUrl}/data/${successData.hash}/${originalData}`).replace(/\+/g, "-").replace(/\//g, "_")}`) : []
     pageList = Array.from({ length: pages.length }, (_, index) => index + 1)
 
     return { pages, chapterPagesLoading: isLoading, pageList }

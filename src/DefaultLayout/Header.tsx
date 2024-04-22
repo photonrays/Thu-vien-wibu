@@ -29,7 +29,7 @@ export default function Header() {
         }
         const delayDebounceFn = setTimeout(() => {
             if (searchValue.length > 0) {
-                getSearchManga({ title: searchValue, hasAvailableChapters: 'true', availableTranslatedLanguage: ['vi'], includes: [Includes.COVER_ART] }).then(data => setSearchResult(data.data.data)).catch(e => console.log(e))
+                getSearchManga({ title: encodeURIComponent(searchValue), hasAvailableChapters: 'true', availableTranslatedLanguage: ['vi'], includes: [Includes.COVER_ART] }).then(data => setSearchResult(data.data.data)).catch(e => console.log(e))
             }
         }, 1000)
         return () => clearTimeout(delayDebounceFn)
@@ -65,8 +65,6 @@ export default function Header() {
             wrapperRef.current.blur();
         }
     }
-
-    console.log("search bar expand: ", searchBarExpand)
 
     const wrapperRef = useRef<HTMLInputElement>(null);
     const resultRef = useRef<HTMLDivElement>(null);

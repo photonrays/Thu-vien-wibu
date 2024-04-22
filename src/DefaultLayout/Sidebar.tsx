@@ -9,15 +9,13 @@ type Props = {
 
 export default function Sidebar({ className = "" }: Props) {
   const { isSidebarOpen, setIsSidebarOpen } = useHeader();
-  const currentUrl = window.location.href;
-  console.log(currentUrl);
+  // const currentUrl = window.location.href;
 
   return (
     <div>
       <div
-        className={`lg:sticky fixed overflow-y-auto ${
-          isSidebarOpen ? "ml-0" : "ml-[-256px]"
-        } w-[256px] h-screen bg-slate-100 flex flex-col shrink-0 items-center gap-2 p-4 top-0 left-0 z-50 transition-all ${className}`}
+        className={`lg:sticky fixed overflow-y-auto ${isSidebarOpen ? "ml-0" : "ml-[-256px]"
+          } w-[256px] h-screen bg-slate-100 flex flex-col shrink-0 items-center gap-2 p-4 top-0 left-0 z-50 transition-all ${className}`}
       >
         <div className="flex items-center justify-between w-full">
           <Link to={"/"} className="text-2xl font-bold">
@@ -40,8 +38,8 @@ export default function Sidebar({ className = "" }: Props) {
             isPending
               ? "pending"
               : isActive
-              ? "w-full bg-primary text-white rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
-              : "w-full rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
+                ? "w-full bg-primary text-white rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
+                : "w-full rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
           }
         >
           <Icon icon="carbon:home" className="text-xl inline mr-1" />
@@ -53,8 +51,8 @@ export default function Sidebar({ className = "" }: Props) {
             isPending
               ? "pending"
               : isActive
-              ? "w-full bg-primary text-white rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
-              : "w-full rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
+                ? "w-full bg-primary text-white rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
+                : "w-full rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
           }
         >
           <Icon
@@ -69,8 +67,8 @@ export default function Sidebar({ className = "" }: Props) {
             isPending
               ? "pending"
               : isActive
-              ? "w-full bg-primary text-white rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
-              : "w-full rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
+                ? "w-full bg-primary text-white rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
+                : "w-full rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
           }
         >
           <Icon icon="ic:baseline-history" className="text-xl inline mr-1" />
@@ -82,8 +80,8 @@ export default function Sidebar({ className = "" }: Props) {
             isPending
               ? "pending"
               : isActive
-              ? "w-full bg-primary text-white rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
-              : "w-full rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
+                ? "w-full bg-primary text-white rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
+                : "w-full rounded-md p-2 flex items-center gap-1 hover:bg-primary hover:text-white"
           }
         >
           <Icon icon="octicon:book-16" className="text-xl inline mr-1" />

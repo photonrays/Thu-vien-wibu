@@ -24,12 +24,10 @@ export default function useLatestUpdateMangas({ latestChapter, chapterLoading, p
     const { data, isLoading } = useSWR(!chapterLoading ? ['lastestUpdates', page] : null, () => getSearchManga(requestParams))
     const successData = data && data.data.result === "ok" && (data.data)
     const updates: { [key: string]: { manga: Manga, chapterList: Chapter[] } } = {}
-    const latestChapters = {} as { [key: string]: Chapter[] };
-
 
     if (successData && !isLoading) {
         for (const manga of successData.data) {
-            updates[manga.id] = { manga, chapterList: latestChapters[manga.id] }
+            updates[manga.id] = { manga, chapterList: latestChapter[manga.id] }
         }
     }
 

@@ -88,7 +88,7 @@ export default function Home() {
       <section className="grid grid-cols-2 lg:grid-cols-3 gap-20 mb-14">
         <div>
           <div className="flex justify-between">
-            <h2 className="text-2xl font-bold">Tiếp tục đọc...</h2>
+            <h2 className="text-2xl font-bold">Tiếp tục đọc</h2>
             <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">
               Xem tất cả
             </button>
@@ -147,7 +147,7 @@ export default function Home() {
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          {!latestUpdatesLoading || Object.entries(latestUpdates).length < 1 ? (
+          {!latestUpdates || Object.entries(latestUpdates).length < 1 ? (
             <div>Loading</div>
           ) : (
             Object.entries(latestUpdates)

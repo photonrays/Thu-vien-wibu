@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { GetSearchMangaRequestOptions, MangaContentRating, MangaPublicationDemographic, MangaPublicationStatus, GetSearchMangaOrder, getMangaTag } from "@/api/manga";
 import { Tag } from "@/api/schema";
 import Card from "@/components/Card";
-import { ExtendManga } from "@/api/extend";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import convertSearchParams from "@/utils/convertSearchParams";
 import buildQueryString from "@/utils/buildQueryString";
@@ -36,7 +35,6 @@ export default function Search() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const options = convertSearchParams(searchParams)
-  console.log("option: ", options)
   const { data, isLoading } = useSearchManga(options)
   const offset = searchParams.get("offset") ? parseInt(searchParams.get("offset")!) : 0
   const total = data ? data.total : 0
