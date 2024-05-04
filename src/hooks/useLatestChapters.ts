@@ -7,7 +7,6 @@ import { Chapter } from "@/api/schema";
 
 
 export default function useLatestChapters(page: number) {
-    const date = new Date;
     const requestParams: GetChapterRequestOptions = {
         limit: 64,
         offset: (page - 1) * 64,
@@ -16,9 +15,10 @@ export default function useLatestChapters(page: number) {
         contentRating: [MangaContentRating.SAFE, MangaContentRating.EROTICA, MangaContentRating.SUGGESTIVE, MangaContentRating.PORNOGRAPHIC],
         translatedLanguage: ['vi']
     };
-    const { data, isLoading } = useSWR(['lastestChapter', page, date.getMinutes()], () => getChapter(requestParams))
+    const { data, isLoading } = useSWR(['lastestChapter', page], () => getChapter(requestParams))
     const successData = data && data.data.result === "ok" && (data.data)
     const latestChapters: { [key: string]: Chapter[] } = {};
+    console.log("successData: ", successData)
 
     if (successData && !isLoading) {
         for (const chapter of successData.data) {

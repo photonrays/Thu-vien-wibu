@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from "react-router-dom"
 import { useHeader } from "@/context/useHeader";
 import { useState, useEffect, useRef } from 'react'
@@ -37,8 +38,16 @@ export default function Header() {
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrollY(window.scrollY)
-            setTextColor(window.scrollY > 32 ? '#000000' : titleColor);
+            if (window.scrollY <= 64) {
+                setScrollY(window.scrollY / 64)
+                if (window.scrollY > 32 && textColor != '#000000') {
+                    setTextColor('#000000');
+                } else if (window.scrollY <= 32 && textColor != titleColor) {
+                    setTextColor(titleColor)
+                }
+            } else if (scrollY < 64) {
+                setScrollY(window.scrollY)
+            }
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -46,7 +55,7 @@ export default function Header() {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, [scrollY, titleColor]);
+    }, [scrollY]);
 
     useEffect(() => {
         setTextColor(titleColor)
