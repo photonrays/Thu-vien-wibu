@@ -1,6 +1,8 @@
 import useFollow, { followEntry } from "@/hooks/useFollow";
+import isEmpty from "@/utils/isEmpty";
 import { Icon } from "@iconify/react";
 import { Link, useNavigate } from "react-router-dom";
+import empty from "../assets/empty2.jpg"
 
 export default function Follow() {
   const navigate = useNavigate();
@@ -17,11 +19,17 @@ export default function Follow() {
         <h2 className="text-xl">Đang theo dõi</h2>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 mt-5">
-        {Object.entries(follow).map(([mangaId, data], index) => (
-          <Card key={index} id={mangaId} data={data} />
-        ))}
-      </div>
+      {isEmpty(history)
+        ? <div className="flex flex-1 items-center justify-center w-full h-[70vh] flex-col opacity-50">
+          <img src={empty} />
+          <p className="text-lg">Danh theo dõi TRỐNG</p>
+        </div>
+        : <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 mt-5">
+          {Object.entries(follow).map(([mangaId, data], index) => (
+            <Card key={index} id={mangaId} data={data} />
+          ))}
+        </div>}
+
     </div>
   );
 }

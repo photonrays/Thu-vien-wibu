@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { Manga } from '@/api/schema';
 import Tag from './Tag';
-import { ExtendManga } from '@/api/extend';
 import getCoverArt from '@/utils/getCoverArt';
 import { getMangaTitle } from '@/utils/getTitles';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-export default function PopularCard({ data }: { data?: ExtendManga }) {
+export default function PopularCard({ data }: { data?: Manga }) {
     const coverArt = getCoverArt(data);
-    const artist = data?.artist?.attributes?.name || ''
-    const author = data?.author?.attributes?.name || ''
+    const artist = data?.relationships.find(rela => rela.type === 'artist')?.attributes?.name as string || ''
+    const author = data?.relationships.find(rela => rela.type === 'author')?.attributes?.name as string || ''
+    const navigate = useNavigate();
 
     if (!data) {
         return <div className='h-[290px] rounded-lg animate-pulse flex p-4 bg-slate-100'>
@@ -26,20 +28,22 @@ export default function PopularCard({ data }: { data?: ExtendManga }) {
     }
 
     return (
-        <Link to={`/truyen-tranh/${data.id}`} className='relative flex h-[290px] p-4 rounded-lg transition-all'>
+        <div className='relative flex h-[290px] p-4 rounded-lg transition-all'>
             {/* Background image */}
             <div className="absolute left-0 top-0 w-full h-full z-[-2] rounded-xl overflow-hidden">
-                <img src={`${coverArt}`} alt="Background" loading='lazy' className='object-cover w-full h-full blur-lg opacity-20' />
+                <img src={`${coverArt}`} alt="Background" loading='lazy' className='object-cover w-full h-full blur-lg opacity-30' />
             </div>
             {/* Book cover */}
-            <div className='flex-shrink-0 overflow-hidden max-w-[190px] h-full rounded-lg'>
+            <button onClick={() => navigate(`/truyen-tranh/${data.id}`)} className='flex-1 overflow-hidden max-w-[190px] h-full rounded-lg'>
                 <img referrerPolicy="no-referrer" src={coverArt} alt="Book Cover" className='object-contain h-full rounded-lg' loading='lazy' />
-            </div>
+            </button>
             {/* Book details */}
-            <div className='ml-4 h-full flex flex-col'>
+            <div className='flex-1 ml-4 h-full flex flex-col'>
                 <div className='shrink-0 mb-2'>
-                    <span className='text-4xl font-bold line-clamp-2'>{getMangaTitle(data)}</span>
-                    <div className='flex gap-2 mt-2'>
+                    <button onClick={() => navigate(`/truyen-tranh/${data.id}`)}>
+                        <span className='text-2xl md:text-3xl lg:text-4xl font-bold line-clamp-2'>{getMangaTitle(data)}</span>
+                    </button>
+                    <div className='flex gap-2 mt-2 flex-wrap'>
                         {data?.attributes.contentRating === "suggestive" && <Tag contentRating={data?.attributes.contentRating} />}
                         {data.attributes.tags.map((obj, index) => {
                             if (obj.attributes.group === 'genre') {
@@ -58,6 +62,6 @@ export default function PopularCard({ data }: { data?: ExtendManga }) {
                 {/* Author */}
                 <p>{author === artist ? author : author + ", " + artist}</p>
             </div>
-        </Link>
+        </div>
     )
 }

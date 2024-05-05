@@ -101,12 +101,19 @@ export default function Header() {
             style={{ backgroundColor: `rgba(255, 255, 255, ${Math.max(0, scrollY / 64)})` }}>
             <div className={`font-bold text-2xl flex items-center ${isSidebarOpen ? 'hidden' : 'inline'}`} style={{ color: textColor }}>
                 <Icon icon="iconoir:menu-scale" vFlip={true} style={{ color: textColor }} className="hover:cursor-pointer" onClick={open} />
-                <Link to={"/"}><Icon icon="raphael:book" className="text-primary text-5xl md:3xl inline-block ml-3" />WibuLib</Link>
+                <Link to={"/"} className="flex flex-nowrap"><Icon icon="raphael:book" className="text-primary text-5xl md:3xl inline-block ml-3" />WibuLib</Link>
             </div>
-            <div className='relative mr-4 bg-[#F6F6F6] rounded-lg p-2 md:p-0 ml-auto'>
-                <Icon icon="radix-icons:magnifying-glass" className="text-[24px] md:absolute inline top-1/2 md:-translate-y-1/2 left-4" />
+            <div className='absolute right-0 flex flex-nowrap items-center md:relative mr-4 bg-[#F6F6F6] rounded-lg ml-auto'>
+                <Icon
+                    onClick={() => {
+                        setShowResult(true)
+                        setSearchBarExpand(true)
+                        wrapperRef.current?.focus()
+                    }}
+                    icon="radix-icons:magnifying-glass"
+                    className="text-[24px] absolute inline top-1/2 -translate-y-1/2 left-4" />
                 <form onSubmit={onFormSubmit}>
-                    <input className={`bg-[#F6F6F6] ${searchBarExpand ? 'w-[600px]' : 'w-[300px]'} p-3 pl-12 text-md text-gray-900 rounded-lg hidden md:block transition-all ease-in focus:w-[600px] outline-primary`}
+                    <input className={`bg-[#F6F6F6] ${searchBarExpand ? 'w-[92vw] md:w-[590px] pl-12' : 'w-0 md:w-[300px] pl-10'} p-3 md:pl-12 text-md text-gray-900 rounded-lg block transition-all outline-primary`}
                         type="search"
                         placeholder="Tìm kiếm truyện, tác giả..."
                         value={searchValue}
@@ -114,7 +121,7 @@ export default function Header() {
                         ref={wrapperRef}
                         onClick={() => setShowResult(true)} />
                 </form>
-                {showResult && searchResult.length > 0 && <div ref={resultRef} className={`w-[600px] max-h-[600px] overflow-auto bg-white absolute mt-1 rounded-xl px-4`}>
+                {showResult && searchResult.length > 0 && <div ref={resultRef} className={`w-full max-h-[500px] overflow-auto bg-white absolute mt-1 rounded-xl px-4 top-full`}>
                     <Link to={`/tim-kiem?title=${searchValue}`} className="w-full flex justify-end items-center gap-1 my-2"><p className="">Tìm kiếm nâng cao</p><Icon icon="ph:arrow-right-bold" width={20} height={20} /></Link>
                     {searchResult.map((manga, index) => {
                         console.log(manga)

@@ -12,6 +12,10 @@ import useMangaRanking from "@/hooks/useMangaRanking";
 import RankingCard from "@/components/RankingCard";
 import { Icon } from "@iconify/react";
 import useLatestChapters from "@/hooks/useLatestChapters";
+import { useNavigate } from "react-router-dom";
+import useRecentlyAdded from "@/hooks/useRecentlyAdded";
+import Card from "@/components/Card";
+import isEmpty from "@/utils/isEmpty";
 
 export default function Home() {
   const settings: Settings = {
@@ -19,12 +23,14 @@ export default function Home() {
     infinite: true,
     lazyLoad: "progressive",
     speed: 500,
-    draggable: false,
     slidesToShow: 1,
     arrows: false,
+    autoplay: true,
   };
 
   const sliderRef = useRef<Slider | null>(null);
+
+  const navigate = useNavigate()
 
   const next = () => {
     sliderRef.current?.slickNext();
@@ -40,9 +46,7 @@ export default function Home() {
   const { history, removeHistory } = useReadingHistory();
   const { latestUpdates, latestUpdatesLoading } = useLatestChapters(1)
   const { data: ranking, isLoading: rankingLoading } = useMangaRanking(1);
-
-  console.log("latestUpdates: ", latestUpdates)
-  console.log("latestUpdatesLoading: ", latestUpdatesLoading)
+  const { data: recentlyAdded, isLoading: recentlyAddedLoading } = useRecentlyAdded()
 
   useEffect(() => {
     MangaApi.getMangaTag()
@@ -69,13 +73,13 @@ export default function Home() {
               })}
             </Slider>
             <Icon
-              className="absolute top-1/2 -translate-y-1/2 left-0 hover:cursor-pointer bg-slate-100 rounded-full"
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-2 left-0 hover:cursor-pointer bg-slate-100 rounded-full"
               icon="iconamoon:arrow-left-2"
               onClick={previous}
               width={40}
             />
             <Icon
-              className="absolute top-1/2 -translate-y-1/2 right-0 hover:cursor-pointer bg-slate-100 rounded-full"
+              className="absolute top-1/2 -translate-y-1/2 translate-x-2 right-0 hover:cursor-pointer bg-slate-100 rounded-full"
               icon="iconamoon:arrow-right-2"
               onClick={next}
               width={40}
@@ -84,26 +88,30 @@ export default function Home() {
         )}
       </section>
 
-      {/*Continue reading*/}
-      <section className="grid grid-cols-2 lg:grid-cols-3 gap-20 mb-14">
-        <div>
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-20 mb-14">
+        {/*Continue reading*/}
+        <div className="hidden sm:block">
           <div className="flex justify-between">
             <h2 className="text-2xl font-bold">Tiếp tục đọc</h2>
-            <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">
+            <button
+              onClick={() => navigate("/lich-su")}
+              className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">
               Xem tất cả
             </button>
           </div>
           <div className=" w-full mt-5">
-            {Object.entries(history)
-              .slice(0, 4)
-              .map(([mangaId, data], index) => (
-                <HistoryCard
-                  key={index}
-                  id={mangaId}
-                  data={data}
-                  handleDelete={() => removeHistory(mangaId)}
-                />
-              ))}
+            {isEmpty(history)
+              ? <div className="w-full bg-gray-100 flex items-center justify-center p-5 font-semibold">LỊCH SỬ TRỐNG</div>
+              : Object.entries(history)
+                .slice(0, 4)
+                .map(([mangaId, data], index) => (
+                  <HistoryCard
+                    key={index}
+                    id={mangaId}
+                    data={data}
+                    handleDelete={() => removeHistory(mangaId)}
+                  />
+                ))}
           </div>
         </div>
 
@@ -125,7 +133,7 @@ export default function Home() {
           <div className="flex justify-between">
             <h2 className="text-2xl font-bold">Truyện Top</h2>
           </div>
-          <div className=" w-full mt-5">
+          <div className=" w-full mt-5 bg-gray-50 rounded-lg p-5 flex flex-col gap-4">
             {rankingLoading ? (
               <div>Loading</div>
             ) : (
@@ -142,12 +150,12 @@ export default function Home() {
       <section className="mb-8 w-full">
         <div className="flex justify-between">
           <h2 className="text-2xl font-bold mb-8">Mới cập nhật</h2>
-          <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">
+          <button onClick={() => navigate("/moi-cap-nhat")} className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">
             Xem tất cả
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          {!latestUpdates || Object.entries(latestUpdates).length < 1 ? (
+          {!latestUpdates && latestUpdatesLoading || Object.entries(latestUpdates).length < 1 ? (
             <div>Loading</div>
           ) : (
             Object.entries(latestUpdates)
@@ -169,10 +177,22 @@ export default function Home() {
       <section>
         <div className="flex justify-between">
           <h2 className="text-2xl font-bold mb-8">Mới thêm gần đây</h2>
-          <button className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">
+          <button onClick={() => navigate('/tim-kiem?order[createdAt]=desc')} className="h-[40px] bg-primary rounded-3xl inline-flex items-center px-5 text-white">
             Xem tất cả
           </button>
         </div>
+
+        {recentlyAddedLoading ? (
+          <div>loading</div>
+        ) : (
+          <div className="w-full relative">
+            <Slider slidesToShow={8} slidesToScroll={7} dots={true} draggable={false}>
+              {recentlyAdded && recentlyAdded?.data?.map((obj, index) => {
+                return <Card key={index} manga={obj} />;
+              })}
+            </Slider>
+          </div>
+        )}
       </section>
     </div>
   );

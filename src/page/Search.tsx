@@ -136,10 +136,10 @@ export default function Search() {
     <div className="w-full px-5 min-h-screen">
       <button className="flex items-center gap-3 mb-5 cursor-pointer" onClick={() => navigate(-1)}> <Icon icon="ph:arrow-left-bold" width={24} /><h2 className="text-xl">Tìm kiếm nâng cao</h2></button>
       <div className="flex w-full mb-5">
-        <div className='relative mr-4 bg-[#F6F6F6] rounded-lg p-2 md:p-0 ml-auto grow'>
-          <Icon icon="radix-icons:magnifying-glass" className="text-[24px] md:absolute inline top-1/2 md:-translate-y-1/2 left-4" />
+        <div className='relative mr-4 bg-[#F6F6F6] rounded-lg p-0 ml-auto grow'>
+          <Icon icon="radix-icons:magnifying-glass" className="text-[24px] absolute inline top-1/2 -translate-y-1/2 left-4" />
           <form onSubmit={onFormSubmit}>
-            <input className="bg-[#F6F6F6] w-full p-3 pl-12 text-md text-gray-900 rounded-lg hidden md:block outline-primary"
+            <input className="bg-[#F6F6F6] w-full p-3 pl-12 text-md text-gray-900 rounded-lg block outline-primary"
               type="search"
               placeholder="Tìm kiếm truyện, tác giả..."
               value={searchValue}
@@ -148,7 +148,7 @@ export default function Search() {
         </div>
         <button className="flex items-center w-[150px] h-[48px] bg-primary text-white gap-2 justify-center rounded-md" onClick={() => setShowFilter(prev => !prev)}><Icon icon="ep:arrow-down-bold" className={`transition-all ${showFilter ? 'rotate-180' : ''}`} /><span>Hiện filter</span></button>
       </div>
-      <div className={`grid grid-cols-4 gap-5 transition-all ${showFilter ? 'h-[150px]' : 'h-0 overflow-hidden'}`}>
+      <div className={`grid grid-cols-1 md:grid-cols-4 gap-5 transition-all ${showFilter ? 'h-[400px] md:h-[150px]' : 'h-0 overflow-hidden'} mb-3`}>
         <Select title="Sắp xếp" data={sortByData} state={sort} setState={setSort} type="order" />
         <Select title="Thể loại" data={tagData} state={tag} setState={setTag} type="tag" />
         <Select title="Xếp loại nội dung" data={contentRatingData} state={contentRating} setState={setContentRating} type='multipleChoice' />

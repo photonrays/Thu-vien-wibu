@@ -6,6 +6,7 @@ import Search from "./page/Search";
 import Setting from "./page/Setting";
 import Chapter from "./page/Chapter";
 import Follow from "./page/Follow";
+import Latest from "./page/Latest";
 
 const routes: RouteObject[] = [
   {
@@ -35,6 +36,10 @@ const routes: RouteObject[] = [
   {
     path: "/cai-dat",
     element: <Setting />,
+  },
+  {
+    path: "/moi-cap-nhat",
+    element: <Latest />,
   },
 ];
 

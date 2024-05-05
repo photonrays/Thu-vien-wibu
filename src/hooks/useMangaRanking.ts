@@ -5,7 +5,7 @@ import useSearchManga from "./useSearchManga";
 
 export default function useMangaRanking(page: number) {
   const requestParams: GetSearchMangaRequestOptions = {
-    includes: [Includes.COVER_ART],
+    includes: [Includes.COVER_ART, Includes.ARTIST, Includes.AUTHOR],
     order: { followedCount: Order.DESC },
     contentRating: [MangaContentRating.SAFE, MangaContentRating.SUGGESTIVE],
     hasAvailableChapters: "true",
